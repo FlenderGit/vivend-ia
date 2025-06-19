@@ -1,0 +1,3 @@
+export {
+    timestampToHour
+} from './date';

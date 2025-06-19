@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #7e0c6d;
+  --color-background: light-dark(#fefefe, #222);
+  --color-background-secondary: light-dark(#f8f8f8, #333);
+
+  --color-text: light-dark(#222, #fefefe);
+  --color-text-semi-light: light-dark(#666, #bbb);
+  --color-text-light: light-dark(#888, #ddd);
+  --color-border: light-dark(#ccc, #333);
+
+  --color-user: #feac6d;
+  --color-assistant: #ac91ee;
+  --default-font-family: "Roboto", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-background h-screen w-screen text-text flex flex-col;
+  }
+
+  div#app {
+    @apply contents text-base;
+  }
+}
+
+@layer components {
+  .flash {
+    @apply overflow-hidden;
+  }
+
+  .flash::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 0, 0, 0.02),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  .flash:hover::before {
+    left: 100%;
+  }
+}
