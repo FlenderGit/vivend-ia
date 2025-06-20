@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { fly, slide } from "svelte/transition";
+  import { slide } from "svelte/transition";
   import { Discussion } from "./lib/classes";
   import ClickableIcon from "./lib/components/ui/ClickableIcon.svelte";
   import Sidebar from "./lib/components/ui/Sidebar.svelte";
   import MessageAreaView from "./lib/components/discussion/MessageAreaView.svelte";
-  import Input from "./lib/components/Input.svelte";
 
   const discussion: Discussion = new Discussion({
     id: "1",

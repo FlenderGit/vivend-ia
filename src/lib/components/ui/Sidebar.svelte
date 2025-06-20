@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fade, slide } from "svelte/transition";
+  import { fade } from "svelte/transition";
   import type { DiscussionPreviewData } from "../../types";
   import ClickableIcon from "./ClickableIcon.svelte";
   import Icon from "@iconify/svelte";
