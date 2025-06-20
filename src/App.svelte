@@ -5,7 +5,7 @@
   import Sidebar from "./lib/components/ui/Sidebar.svelte";
   import MessageAreaView from "./lib/components/discussion/MessageAreaView.svelte";
 
-  const discussion: Discussion = new Discussion({
+  let discussion: Discussion = $state(new Discussion({
     id: "1",
     title: "My First Discussion",
     icon: "lucide:message-circle",
@@ -32,7 +32,7 @@
           "Sure! Here's a short poem for you:\n\nRoses are red,\nViolets are blue,\nI'm here to assist,\nJust ask, and I'll help you!",
       },
     ],
-  });
+  }));
 
   let open = $state(false);
 
@@ -45,11 +45,28 @@
       await discussion.sendMessageToAi(message);
       // If not error
       input_ref.value = "";
+      input_ref.focus();
     }
   }
 
   let input_ref: HTMLInputElement;
+
+  function handleKeyDown(event: KeyboardEvent) {
+    const isCtrlPress = event.ctrlKey || event.metaKey;
+    const isFocusOnInput = document.activeElement === input_ref;
+    if (event.key === "Enter" && !isFocusOnInput && isCtrlPress) {
+      event.preventDefault();
+      input_ref.focus();
+    }
+    console.log("Key pressed:", event.key, "Ctrl pressed:", isCtrlPress);
+    if (isCtrlPress && event.key === "E") {
+      event.preventDefault();
+      open = !open; // Toggle sidebar on Ctrl+E
+    }
+  }
 </script>
+
+<svelte:window onkeydown={handleKeyDown} />
 
 <h1 class="sr-only">Vivend'ia</h1>
 <a href="#main-content" class="sr-only"> Skip to main content </a>
@@ -63,12 +80,18 @@
   <ClickableIcon
     title="Nouvele conversation"
     icon="mingcute:edit-line"
-    onclick={() => console.log("Home clicked")}
+    onclick={() => {
+      discussion = Discussion.new();
+    }}
   />
 </header>
 
 <div class="flex h-screen bg-neutral-200">
-  <Sidebar bind:open />
+  <Sidebar
+    aria-label="Liste des précédentes conversations"
+    aria-keyshortcuts="Ctrl+E"
+    bind:open
+  />
   {#if open}
     <div transition:slide={{ axis: "x", duration: 400 }} class="sm:w-72"></div>
   {/if}
@@ -77,16 +100,21 @@
   >
     <main
       id="main-content"
-      class="lshadow overflow-y-auto z-30 bg-background flex flex-col gap-2 flex-1 p-4 duration-500 transition-all {open &&
+      class="lshadow overflow-y-auto z-30 bg-background flex flex-col gap-2 flex-1 p-3 duration-500 transition-all {open &&
         'sm:rounded-xl'}"
     >
       <MessageAreaView {discussion} class="flex-1 overflow-y-auto" />
       <section>
         <form {onsubmit}>
           <input
+            aria-keyshortcuts="Ctrl+Enter"
+            disabled={discussion.status === "pending"}
             type="text"
             placeholder="Type your message here..."
-            class="w-full lshadow px-4 py-2 border bg-background-secondary border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full lshadow px-4 py-2 text-sm border bg-background-secondary border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
             bind:this={input_ref}
             aria-label="Type your message"
             aria-describedby="input-hint"

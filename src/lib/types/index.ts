@@ -7,4 +7,5 @@ export {
 export {
     type HTMLDivAttributes,
     type HTMLSectionAttributes,
+    type HTMLAsideAttributes,
 } from './html';

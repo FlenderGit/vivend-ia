@@ -1,14 +1,14 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import type { DiscussionPreviewData } from "../../types";
+  import type { DiscussionPreviewData, HTMLAsideAttributes, HTMLDivAttributes } from "../../types";
   import ClickableIcon from "./ClickableIcon.svelte";
   import Icon from "@iconify/svelte";
 
   type Props = {
     open?: boolean;
-  };
+  } & HTMLAsideAttributes;
 
-  let { open = $bindable(false) }: Props = $props();
+  let { open = $bindable(false), ...rest }: Props = $props();
   let discussions: Array<DiscussionPreviewData> = $state([
     {
       id: "1",
@@ -46,7 +46,7 @@
   class:translate-x-[-100%]={!open}
   class:translate-x-0={open}
   class:opacity-0={!open}
-  aria-label="Liste des précédentes conversations"
+  {...rest}
 >
   <h2>Conversations</h2>
   <nav>

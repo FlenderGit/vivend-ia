@@ -1,14 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #7e0c6d;
+  --color-primary: 126, 12, 109;
   --color-background: light-dark(#f7f7f7, #222);
 
   --color-text: light-dark(#222, #fefefe);
   --color-text-light: light-dark(#888, #ddd);
   --color-border: light-dark(#dde, #333);
 
-  --color-user: #21a0f6;
+  --color-user: rgba(var(--color-primary), 0.3);
+
+  --animate-typing: 0.6s ease-in-out upFade;
+
+  @keyframes upFade {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+  }
   /* --default-font-family: "Roboto", sans-serif; */
 }
 
