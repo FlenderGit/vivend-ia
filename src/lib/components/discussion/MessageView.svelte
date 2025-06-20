@@ -20,25 +20,32 @@
         <ClickableIcon
           icon="mingcute:copy-line"
           title="Copy message"
-          onclick={() => navigator.clipboard.writeText(message.message)}
+          onclick={async () => {
+            try {
+              await navigator.clipboard.writeText(message.message);
+            } catch (error) {
+              return false;
+            }
+            return true;
+          }}
         />
         <ClickableIcon
           icon="mingcute:share-3-line"
           title="Share message"
-          onclick={() => {
-            navigator
-              .share({
+          onclick={async () => {
+            await navigator.share({
               title: "Shared Message",
               text: message.message,
               url: window.location.href,
-            }).catch((error) => console.error("Error sharing:", error));
+            });
           }}
         />
         <ClickableIcon
           icon="mingcute:announcement-line"
           title="Play message"
-          onclick={() => {
-            console.log("Report message clicked");
+          onclick={async () => {
+            // Wait 3sec
+            await new Promise((resolve) => setTimeout(resolve, 3000));
           }}
         />
       </footer>

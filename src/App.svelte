@@ -4,35 +4,47 @@
   import ClickableIcon from "./lib/components/ui/ClickableIcon.svelte";
   import Sidebar from "./lib/components/ui/Sidebar.svelte";
   import MessageAreaView from "./lib/components/discussion/MessageAreaView.svelte";
+  import type { ToastData } from "./lib/types";
+  import Toast from "./lib/components/ui/Toast.svelte";
 
-  let discussion: Discussion = $state(new Discussion({
-    id: "1",
-    title: "My First Discussion",
-    icon: "lucide:message-circle",
-    description: "This is a test discussion with some example messages.",
-    timestamp: Date.now(),
-    messages: [
-      { role: "user", message: "Hello, how are you?" },
-      { role: "assistant", message: "I'm fine, thank you!" },
-      { role: "user", message: "What can you do?" },
-      {
-        role: "assistant",
-        message:
-          "I can help you with various tasks. Just let me know what you need! and I'll do my best to assist you. here are some examples of what I can do:",
-      },
-      {
-        role: "assistant",
-        message:
-          "1. Answer questions\n2. Provide explanations\n3. Help with coding tasks\n4. Generate creative content",
-      },
-      { role: "user", message: "Can you write a poem?" },
-      {
-        role: "assistant",
-        message:
-          "Sure! Here's a short poem for you:\n\nRoses are red,\nViolets are blue,\nI'm here to assist,\nJust ask, and I'll help you!",
-      },
-    ],
-  }));
+  let discussion: Discussion = $state(
+    new Discussion({
+      id: "1",
+      title: "My First Discussion",
+      icon: "lucide:message-circle",
+      description: "This is a test discussion with some example messages.",
+      timestamp: Date.now(),
+      messages: [
+        { role: "user", message: "Hello, how are you?" },
+        { role: "assistant", message: "I'm fine, thank you!" },
+        { role: "user", message: "What can you do?" },
+        {
+          role: "assistant",
+          message:
+            "I can help you with various tasks. Just let me know what you need! and I'll do my best to assist you. here are some examples of what I can do:",
+        },
+        {
+          role: "assistant",
+          message:
+            "1. Answer questions\n2. Provide explanations\n3. Help with coding tasks\n4. Generate creative content",
+        },
+        { role: "user", message: "Can you write a poem?" },
+        {
+          role: "assistant",
+          message:
+            "Sure! Here's a short poem for you:\n\nRoses are red,\nViolets are blue,\nI'm here to assist,\nJust ask, and I'll help you!",
+        },
+      ],
+    })
+  );
+
+  let toasts: Array<ToastData> = $state([
+    {
+      message: "Welcome to Vivend'ia!",
+      type: "info",
+      duration: 3000,
+    },
+  ]);
 
   let open = $state(false);
 
@@ -67,6 +79,15 @@
 </script>
 
 <svelte:window onkeydown={handleKeyDown} />
+
+<div class="absolute right-4 top-4 z-50">
+  {#each toasts as toast}
+    <Toast {toast} onclose={() => {
+      toasts = toasts.filter((t) => t !== toast);
+    }} />
+  
+  {/each}
+</div>
 
 <h1 class="sr-only">Vivend'ia</h1>
 <a href="#main-content" class="sr-only"> Skip to main content </a>

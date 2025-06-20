@@ -9,3 +9,7 @@ export {
     type HTMLSectionAttributes,
     type HTMLAsideAttributes,
 } from './html';
+
+export {
+    type ToastData,
+} from './components';
