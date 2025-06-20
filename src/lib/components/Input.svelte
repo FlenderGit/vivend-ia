@@ -1,21 +1,23 @@
 <script lang="ts">
+  import Icon from "@iconify/svelte";
   import type { HTMLInputAttributes } from "svelte/elements";
 
   type Props = HTMLInputAttributes & {
     // onsubmit: (value: string) => void;
+    // icon?: string;
   };
 
   const { ...rest }: Props = $props();
   let value = $state("");
 </script>
 
-  <input
-    type="text"
-    placeholder="Type your message here..."
-    class="w-full px-4 py-2 border bg-background-secondary border-border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-    {...rest}
-    bind:value
-  />
+<input
+  type="text"
+  placeholder="Type your message here..."
+  class="w-full lshadow px-4 py-2 border bg-background-secondary border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+  {...rest}
+  bind:value
+/>
 
 <!-- <form class="p-2">
   <input

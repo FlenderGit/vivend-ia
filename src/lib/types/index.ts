@@ -5,5 +5,6 @@ export {
 } from './discussion';
 
 export {
-    type HTMLDivAttributes
+    type HTMLDivAttributes,
+    type HTMLSectionAttributes,
 } from './html';

@@ -19,7 +19,7 @@
 {/snippet}
 
 <button
-  class="flash relative bg-background hover:bg-background-secondary not-dark:hover:shadow-md flex gap-2 border border-border rounded-xl p-3 transition-all hover:-translate-y-0.5 min-w-0"
+  class="flash relative bg-background hover:bg-background-secondary not-dark:hover:shadow-md flex gap-2 border border-border rounded-xl p-3 hover:-translate-y-0.5 min-w-0"
 >
   {@render IconPreview(preview.icon)}
   <div class="flex-1 flex flex-col justify-around text-left min-w-0">
