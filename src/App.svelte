@@ -6,6 +6,7 @@
   import MessageAreaView from "./lib/components/discussion/MessageAreaView.svelte";
   import type { ToastData } from "./lib/types";
   import Toast from "./lib/components/ui/Toast.svelte";
+  import { popper } from "./lib/actions/popper";
 
   let discussion: Discussion = $state(
     new Discussion({
@@ -70,10 +71,9 @@
       event.preventDefault();
       input_ref.focus();
     }
-    console.log("Key pressed:", event.key, "Ctrl pressed:", isCtrlPress);
     if (isCtrlPress && event.key === "E") {
       event.preventDefault();
-      open = !open; // Toggle sidebar on Ctrl+E
+      open = !open;
     }
   }
 </script>
@@ -82,10 +82,12 @@
 
 <div class="absolute right-4 top-4 z-50">
   {#each toasts as toast}
-    <Toast {toast} onclose={() => {
-      toasts = toasts.filter((t) => t !== toast);
-    }} />
-  
+    <Toast
+      {toast}
+      onclose={() => {
+        toasts = toasts.filter((t) => t !== toast);
+      }}
+    />
   {/each}
 </div>
 
@@ -114,7 +116,7 @@
     bind:open
   />
   {#if open}
-    <div transition:slide={{ axis: "x", duration: 400 }} class="sm:w-72"></div>
+    <div transition:slide={{ axis: "x", duration: 400 }} class="sm:w-64"></div>
   {/if}
   <div
     class="flex-1 flex flex-col transition-all duration-500 {open && 'sm:p-3'}"

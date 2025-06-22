@@ -1,32 +1,83 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
   import type { DiscussionPreviewData } from "../../types";
-  import { timestampToHour } from "../../utils";
+  import ClickableIcon from "../ui/ClickableIcon.svelte";
+  import createPopperAction from "../../actions/popper";
 
   type Props = {
+    is_selected?: boolean;
     preview: DiscussionPreviewData;
+    is_dropdown_down?: boolean;
+    ondropdown_clicked?: () => void;
   };
 
-  let { preview }: Props = $props();
+  let { preview, is_selected, is_dropdown_down, ondropdown_clicked }: Props =
+    $props();
+
+  let [usePopperElement, usePopperTooltip] = createPopperAction();
+
+  const actions = [
+    {
+      label: "Share",
+      icon: "mingcute:share-2-line",
+    },
+    {
+      label: "Delete",
+      icon: "mingcute:delete-2-line",
+    },
+  ];
 </script>
 
-{#snippet IconPreview(icon: string)}
-  <div
-    class="size-12 flex items-center justify-center rounded-xl bg-gradient-to-tr from-assistant to-slate-100"
-  >
-    <Icon {icon} class="text-3xl" />
-  </div>
-{/snippet}
-
-<button
-  class="flash relative bg-background hover:bg-background-secondary not-dark:hover:shadow-md flex gap-2 border border-border rounded-xl p-3 hover:-translate-y-0.5 min-w-0"
+<div
+  class="rounded-xl hover:bg-neutral-300 px-3 py-1 flex items-center justify-between gap-1 cursor-pointer"
+  title={preview.title}
 >
-  {@render IconPreview(preview.icon)}
-  <div class="flex-1 flex flex-col justify-around text-left min-w-0">
-    <p class="font-semibold">{preview.title}</p>
-    <p class="text-sm text-text-light truncate">{preview.description}</p>
+  <div
+    class="flex items-center gap-2 min-w-0 flex-1"
+    role="tab"
+    aria-selected={is_selected}
+    tabindex="0"
+  >
+    <Icon icon={preview.icon} class="size-6 shrink-0" />
+    <p class="truncate">{preview.title}</p>
   </div>
-  <div class="flex flex-col justify-center flex-shrink-0">
-    <p class="text-xs text-text-light">{timestampToHour(preview.timestamp)}</p>
+  <div
+    use:usePopperElement
+    onclick={() => {
+      ondropdown_clicked?.();
+    }}
+  >
+    <ClickableIcon icon="mingcute:more-1-fill" title="Details" />
   </div>
-</button>
+</div>
+{#if is_dropdown_down}
+  <div
+    use:usePopperTooltip={{
+      placement: "bottom-end",
+      modifiers: [
+        {
+          name: "offset",
+          options: {
+            offset: [0, 4],
+          },
+        },
+      ],
+    }}
+    class="p-2 bg-neutral-100 rounded shadow-lg border border-neutral-300 z-50"
+  >
+    <ul>
+      <li>
+        {#each actions as action}
+          <li class="flex items-center gap-2 p-1 hover:bg-neutral-200 rounded cursor-pointer">
+            <Icon
+              icon={action.icon}
+              class="size-4"
+              title={action.label}
+            />
+            <p class="text-sm">{action.label}</p>
+          </li>
+        {/each}
+      </li>
+    </ul>
+  </div>
+{/if}

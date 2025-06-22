@@ -1,18 +1,27 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
   import type { HTMLButtonAttributes } from "svelte/elements";
+  import { on } from "svelte/events";
+
+  type OnClickFn = {
+    onclickpromise: () => Promise<boolean | void>;
+    onclick?: never;
+  } | {
+    onclick?: () => void;
+    onclickpromise?: never;
+  };
 
   type Props = {
     icon: string;
-    onclick?: () => Promise<boolean | void>;
-  } & HTMLButtonAttributes;
+  } & OnClickFn & HTMLButtonAttributes;
 
-  const { icon, onclick, title, ...rest }: Props = $props();
+  const { icon, onclick, onclickpromise, title, ...rest }: Props = $props();
 
   const handleClick = async (_: MouseEvent) => {
-    if (onclick) {
+
+    if (onclickpromise) {
       state = "pending";
-      const result = await onclick();
+      const result = await onclickpromise();
       console.log("ClickableIcon clicked", result);
       if (result !== undefined) {
         state = result ? "success" : "error";
@@ -22,6 +31,8 @@
       } else {
         state = "neutral";
       }
+    } else if (onclick) {
+      onclick();
     }
   };
 
@@ -30,7 +41,7 @@
 
 <button
   onclick={handleClick}
-  class="flex-center cursor-pointer size-8 rounded-lg hover:bg-neutral-300 transition-colors"
+  class="flex-center cursor-pointer size-8 rounded-lg hover:backdrop-brightness-90 transition-colors"
   {...rest}
   {title}
   aria-label={title}

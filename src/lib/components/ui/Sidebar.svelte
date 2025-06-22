@@ -1,18 +1,22 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import type { DiscussionPreviewData, HTMLAsideAttributes, HTMLDivAttributes } from "../../types";
+  import type { DiscussionPreviewData, HTMLAsideAttributes } from "../../types";
   import ClickableIcon from "./ClickableIcon.svelte";
   import Icon from "@iconify/svelte";
+  import createPopperAction from "../../actions/popper";
+  import DiscussionPreview from "../discussion/DiscussionPreview.svelte";
 
   type Props = {
     open?: boolean;
   } & HTMLAsideAttributes;
 
   let { open = $bindable(false), ...rest }: Props = $props();
+  let selected_id = $state<string | null>("1");
+  let selected_dropdown_id = $state<string | null>(null);
   let discussions: Array<DiscussionPreviewData> = $state([
     {
       id: "1",
-      title: "Discussion 1",
+      title: "Discussion 1 - A very long title that should be truncated",
       description: "This is a test description. That is a test description.",
       icon: "fluent-color:calendar-edit-16",
       timestamp: 1750231897,
@@ -39,10 +43,12 @@
       timestamp: 1750031897,
     },
   ]);
+
+  const [usePopperElement, usePopperTooltip] = createPopperAction();
 </script>
 
 <aside
-  class="absolute z-40 sm:z-20 bg-neutral-200 sm:w-72 pt-12 p-4 inset-0 duration-500 transition-[opacity,transform,translate]"
+  class="absolute z-40 sm:z-20 bg-neutral-200 sm:w-64 pt-12 p-4 inset-0 duration-500 transition-[opacity,transform,translate]"
   class:translate-x-[-100%]={!open}
   class:translate-x-0={open}
   class:opacity-0={!open}
@@ -54,13 +60,17 @@
       {#each discussions as discussion (discussion.id)}
         <li
           transition:fade={{ duration: 300 }}
-          class="rounded-xl hover:bg-neutral-300 px-3 py-1 flex items-center justify-between gap-1"
+          class=""
+          class:bg-neutral-300={selected_id === discussion.id}
         >
-          <div class="flex items-center gap-2" role="tab" aria-selected="false">
-            <Icon icon={discussion.icon} />
-            <p>{discussion.title}</p>
-          </div>
-          <ClickableIcon icon="mingcute:settings-5-line" title="Edit discussion" />
+          <DiscussionPreview
+            preview={discussion}
+            is_selected={selected_id === discussion.id}
+            is_dropdown_down={selected_dropdown_id === discussion.id}
+            ondropdown_clicked={() => {
+              selected_dropdown_id = selected_dropdown_id === discussion.id ? null : discussion.id;
+            }}
+          />
         </li>
       {/each}
     </ul>

@@ -22,6 +22,7 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "@tailwindcss/vite": "^4.1.10",
     "tailwindcss": "^4.1.10"
   }

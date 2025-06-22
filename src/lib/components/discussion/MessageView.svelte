@@ -20,7 +20,7 @@
         <ClickableIcon
           icon="mingcute:copy-line"
           title="Copy message"
-          onclick={async () => {
+          onclickpromise={async () => {
             try {
               await navigator.clipboard.writeText(message.message);
             } catch (error) {
@@ -32,7 +32,7 @@
         <ClickableIcon
           icon="mingcute:share-3-line"
           title="Share message"
-          onclick={async () => {
+          onclickpromise={async () => {
             await navigator.share({
               title: "Shared Message",
               text: message.message,
@@ -43,7 +43,7 @@
         <ClickableIcon
           icon="mingcute:announcement-line"
           title="Play message"
-          onclick={async () => {
+          onclickpromise={async () => {
             // Wait 3sec
             await new Promise((resolve) => setTimeout(resolve, 3000));
           }}
