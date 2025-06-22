@@ -8,6 +8,7 @@
   import Toast from "./lib/components/ui/Toast.svelte";
   import { onMount } from "svelte";
   import { fetchDiscussionsPreview } from "./lib/api/discussion";
+  import Modal from "./lib/components/ui/Modal.svelte";
 
   let discussion: Discussion = $state(
     new Discussion({
@@ -80,9 +81,21 @@
     const rest = await fetchDiscussionsPreview();
     console.log("Discussions preview:", rest);
   });
+
+  let modalOpen = $state(false);
 </script>
 
 <svelte:window onkeydown={handleKeyDown} />
+
+
+<Modal open={modalOpen}>
+  {#snippet header()}
+    <h2>Create new discussion</h2>
+  {/snippet}
+  <form>
+    <p>Title & Icon & Feeling</p>
+  </form>
+</Modal>
 
 <div class="absolute right-4 top-4 z-50">
   {#each toasts as toast}
@@ -108,7 +121,8 @@
     title="Nouvele conversation"
     icon="mingcute:edit-line"
     onclick={() => {
-      discussion = Discussion.new();
+      // discussion = Discussion.new();
+      modalOpen = true;
     }}
   />
 </header>
