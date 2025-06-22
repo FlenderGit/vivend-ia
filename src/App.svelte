@@ -6,7 +6,8 @@
   import MessageAreaView from "./lib/components/discussion/MessageAreaView.svelte";
   import type { ToastData } from "./lib/types";
   import Toast from "./lib/components/ui/Toast.svelte";
-  import { popper } from "./lib/actions/popper";
+  import { onMount } from "svelte";
+  import { fetchDiscussionsPreview } from "./lib/api/discussion";
 
   let discussion: Discussion = $state(
     new Discussion({
@@ -51,12 +52,10 @@
 
   async function onsubmit(event: Event) {
     event.preventDefault();
-    console.log("Form submitted", input_ref, input_ref.value);
     const message = input_ref.value.trim();
 
     if (message) {
       await discussion.sendMessageToAi(message);
-      // If not error
       input_ref.value = "";
       input_ref.focus();
     }
@@ -76,6 +75,11 @@
       open = !open;
     }
   }
+
+  onMount(async () => {
+    const rest = await fetchDiscussionsPreview();
+    console.log("Discussions preview:", rest);
+  });
 </script>
 
 <svelte:window onkeydown={handleKeyDown} />
@@ -151,20 +155,3 @@
   </div>
   <!-- <DiscussionView class="flex-1" {discussion} {open} /> -->
 </div>
-
-<!-- <hr /> -->
-<!-- <Footer /> -->
-<!-- <HomeView /> -->
-
-<!-- <main class="h-screen grid grid-rows-[auto_1fr_auto]">
-  <Topbar>
-    <Icon icon="lucide:arrow-down"></Icon>
-    <Icon icon={discussion.icon} class="text-2xl" />
-    <h1 class="text-lg">MyChat</h1>
-  </Topbar>
-  <MessageAreaView {discussion} />
-  <Input onsubmit={value => {
-    discussion.addMessage(value, "user");
-    discussion.addMessage("This is a placeholder response.", "assistant");
-  }} />
-</main> -->

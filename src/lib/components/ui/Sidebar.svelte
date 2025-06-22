@@ -43,8 +43,6 @@
       timestamp: 1750031897,
     },
   ]);
-
-  const [usePopperElement, usePopperTooltip] = createPopperAction();
 </script>
 
 <aside
@@ -61,14 +59,14 @@
         <li
           transition:fade={{ duration: 300 }}
           class=""
-          class:bg-neutral-300={selected_id === discussion.id}
         >
           <DiscussionPreview
             preview={discussion}
             is_selected={selected_id === discussion.id}
             is_dropdown_down={selected_dropdown_id === discussion.id}
             ondropdown_clicked={() => {
-              selected_dropdown_id = selected_dropdown_id === discussion.id ? null : discussion.id;
+              selected_dropdown_id =
+                selected_dropdown_id === discussion.id ? null : discussion.id;
             }}
           />
         </li>

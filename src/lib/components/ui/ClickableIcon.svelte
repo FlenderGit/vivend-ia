@@ -1,7 +1,6 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
   import type { HTMLButtonAttributes } from "svelte/elements";
-  import { on } from "svelte/events";
 
   type OnClickFn = {
     onclickpromise: () => Promise<boolean | void>;

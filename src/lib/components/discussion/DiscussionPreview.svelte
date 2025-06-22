@@ -31,23 +31,23 @@
 <div
   class="rounded-xl hover:bg-neutral-300 px-3 py-1 flex items-center justify-between gap-1 cursor-pointer"
   title={preview.title}
+  class:bg-neutral-300={is_selected}
+  role="tab"
+  aria-selected={is_selected}
+  tabindex="0"
 >
-  <div
-    class="flex items-center gap-2 min-w-0 flex-1"
-    role="tab"
-    aria-selected={is_selected}
-    tabindex="0"
-  >
+  <div class="flex items-center gap-2 min-w-0 flex-1">
     <Icon icon={preview.icon} class="size-6 shrink-0" />
     <p class="truncate">{preview.title}</p>
   </div>
-  <div
-    use:usePopperElement
-    onclick={() => {
-      ondropdown_clicked?.();
-    }}
-  >
-    <ClickableIcon icon="mingcute:more-1-fill" title="Details" />
+  <div use:usePopperElement>
+    <ClickableIcon
+      icon="mingcute:more-1-fill"
+      title="Details"
+      onclick={() => {
+        ondropdown_clicked?.();
+      }}
+    />
   </div>
 </div>
 {#if is_dropdown_down}
@@ -66,18 +66,14 @@
     class="p-2 bg-neutral-100 rounded shadow-lg border border-neutral-300 z-50"
   >
     <ul>
-      <li>
-        {#each actions as action}
-          <li class="flex items-center gap-2 p-1 hover:bg-neutral-200 rounded cursor-pointer">
-            <Icon
-              icon={action.icon}
-              class="size-4"
-              title={action.label}
-            />
-            <p class="text-sm">{action.label}</p>
-          </li>
-        {/each}
-      </li>
+      {#each actions as action}
+        <li
+          class="flex items-center gap-2 p-1 hover:bg-neutral-200 rounded cursor-pointer"
+        >
+          <Icon icon={action.icon} class="size-4" />
+          <p class="text-sm">{action.label}</p>
+        </li>
+      {/each}
     </ul>
   </div>
 {/if}

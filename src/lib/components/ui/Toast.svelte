@@ -53,16 +53,14 @@
 <div
   aria-atomic="true"
   aria-live="polite"
-  class="bg-neutral-100 lshadow rounded-lg p-4"
+  class="bg-neutral-100 lshadow rounded-lg p-4 border-l-4 {getClassColor(toast)} "
 >
   <div class="flex-1 flex items-center gap-4">
-    <div class="border-l-4 {getClassColor(toast)}">
       <Icon
         icon={getIcon(toast)}
         class="text-xl"
         style="width: 1.5em; height: 1.5em;"
       />
-    </div>
 
     <div>
       <p>{toast.message}</p>
