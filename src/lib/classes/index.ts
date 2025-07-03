@@ -1,3 +1,3 @@
 export {
-    Discussion,
+    Conversation,
 } from './discussion.svelte';

@@ -11,13 +11,6 @@
   let value = $state("");
 </script>
 
-<input
-  type="text"
-  placeholder="Type your message here..."
-  class="w-full lshadow px-4 py-2 border bg-background-secondary border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-  {...rest}
-  bind:value
-/>
 
 <!-- <form class="p-2">
   <input

@@ -1,12 +1,12 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
-  import type { DiscussionPreviewData } from "../../types";
+  import type { ConversationPreviewData } from "../../types";
   import ClickableIcon from "../ui/ClickableIcon.svelte";
   import createPopperAction from "../../actions/popper";
 
   type Props = {
     is_selected?: boolean;
-    preview: DiscussionPreviewData;
+    preview: ConversationPreviewData;
     is_dropdown_down?: boolean;
     ondropdown_clicked?: () => void;
   };

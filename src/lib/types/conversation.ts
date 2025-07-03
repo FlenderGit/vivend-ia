@@ -1,4 +1,4 @@
-export type DiscussionPreviewData = {
+export type ConversationPreviewData = {
     id: string;
     title: string;
     description: string;
@@ -11,6 +11,6 @@ export type MessageData = {
     role: 'user' | 'assistant';
 }
 
-export type DiscussionData = DiscussionPreviewData & {
+export type ConversationData = ConversationPreviewData & {
     messages: Array<MessageData>;
 }

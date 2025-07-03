@@ -1,6 +1,6 @@
 export {
-    fetchDiscussionsPreview,
-    fetchDiscussionById,
-    createDiscussion,
-    sendMessageToDiscussion,
+    fetchConversationsPreview,
+    fetchConversationById,
+    createConversation,
+    sendMessageToConversation,
 } from './discussion';

@@ -1,10 +1,10 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import type { DiscussionPreviewData, HTMLAsideAttributes } from "../../types";
+  import type { ConversationPreviewData, HTMLAsideAttributes } from "../../types";
   import ClickableIcon from "./ClickableIcon.svelte";
   import Icon from "@iconify/svelte";
   import createPopperAction from "../../actions/popper";
-  import DiscussionPreview from "../discussion/DiscussionPreview.svelte";
+  import ConversationPreview from "../conversation/ConversationPreview.svelte";
 
   type Props = {
     open?: boolean;
@@ -13,31 +13,31 @@
   let { open = $bindable(false), ...rest }: Props = $props();
   let selected_id = $state<string | null>("1");
   let selected_dropdown_id = $state<string | null>(null);
-  let discussions: Array<DiscussionPreviewData> = $state([
+  let discussions: Array<ConversationPreviewData> = $state([
     {
       id: "1",
-      title: "Discussion 1 - A very long title that should be truncated",
+      title: "Conversation 1 - A very long title that should be truncated",
       description: "This is a test description. That is a test description.",
       icon: "fluent-color:calendar-edit-16",
       timestamp: 1750231897,
     },
     {
       id: "2",
-      title: "Discussion 2",
+      title: "Conversation 2",
       description: "Test",
       icon: "fluent-color:lightbulb-filament-16",
       timestamp: 1750230897,
     },
     {
       id: "3",
-      title: "Discussion 3",
+      title: "Conversation 3",
       description: "Test",
       icon: "fluent-color:chat-16",
       timestamp: 1750201897,
     },
     {
       id: "4",
-      title: "Discussion 4",
+      title: "Conversation 4",
       description: "Test",
       icon: "fluent-color:animal-paw-print-16",
       timestamp: 1750031897,
@@ -60,7 +60,7 @@
           transition:fade={{ duration: 300 }}
           class=""
         >
-          <DiscussionPreview
+          <ConversationPreview
             preview={discussion}
             is_selected={selected_id === discussion.id}
             is_dropdown_down={selected_dropdown_id === discussion.id}

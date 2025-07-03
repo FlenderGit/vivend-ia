@@ -1,8 +1,8 @@
 export {
-    type DiscussionPreviewData,
-    type DiscussionData,
+    type ConversationPreviewData,
+    type ConversationData,
     type MessageData,
-} from './discussion';
+} from './conversation';
 
 export {
     type HTMLDivAttributes,

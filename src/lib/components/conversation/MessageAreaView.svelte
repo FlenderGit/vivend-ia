@@ -1,11 +1,11 @@
 <script lang="ts">
   import { tick } from "svelte";
   import MessageView from "./MessageView.svelte";
-  import type { Discussion } from "../../classes";
+  import type { Conversation } from "../../classes";
   import type { HTMLSectionAttributes } from "../../types";
 
   type Props = {
-    discussion: Discussion;
+    discussion: Conversation;
   } & HTMLSectionAttributes;
 
   const { discussion, class: classData, ...rest }: Props = $props();

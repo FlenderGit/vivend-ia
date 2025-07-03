@@ -1,19 +1,19 @@
 <script lang="ts">
   import { slide } from "svelte/transition";
-  import { Discussion } from "./lib/classes";
+  import { Conversation } from "./lib/classes";
   import ClickableIcon from "./lib/components/ui/ClickableIcon.svelte";
   import Sidebar from "./lib/components/ui/Sidebar.svelte";
-  import MessageAreaView from "./lib/components/discussion/MessageAreaView.svelte";
+  import MessageAreaView from "./lib/components/conversation/MessageAreaView.svelte";
   import type { ToastData } from "./lib/types";
   import Toast from "./lib/components/ui/Toast.svelte";
   import { onMount } from "svelte";
-  import { fetchDiscussionsPreview } from "./lib/api/discussion";
+  import { fetchConversationsPreview } from "./lib/api/discussion";
   import Modal from "./lib/components/ui/Modal.svelte";
 
-  let discussion: Discussion = $state(
-    new Discussion({
+  let discussion: Conversation = $state(
+    new Conversation({
       id: "1",
-      title: "My First Discussion",
+      title: "My First Conversation",
       icon: "lucide:message-circle",
       description: "This is a test discussion with some example messages.",
       timestamp: Date.now(),
@@ -40,6 +40,7 @@
       ],
     })
   );
+
 
   let toasts: Array<ToastData> = $state([
     {
@@ -77,9 +78,36 @@
     }
   }
 
+  let u = $state(null);
+  $inspect(u);
   onMount(async () => {
-    const rest = await fetchDiscussionsPreview();
-    console.log("Discussions preview:", rest);
+  chrome.identity.launchWebAuthFlow({
+      url: "https://login.microsoftonline.com/c2c22d99-66d4-4a79-bd38-c1d09da67d49/oauth2/v2.0/authorize?client_id=5bb8917f-269c-40bf-9026-aa40aba84ed1&response_type=code&redirect_uri=https://www2.vivendi.com/authent/&scope=openid%20profile%20email&state=https://flhbjpococakgehhlagdbhejafobichg.chromiumapp.org/",
+      interactive: true,
+    }, (responseUrl) => {
+      console.log("Auth response URL:", responseUrl);
+      if (chrome.runtime.lastError) {
+        console.error("Error during authentication:", chrome.runtime.lastError);
+        return;
+      }
+    });
+  // chrome.identity.getAuthToken({interactive: true})
+  //   .then((token) => {
+  //     console.log("Auth token:", token);
+  //     fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+  //   headers: {Authorization: `Bearer ${token.token}`}
+  // }).then(j => j.json()).then(console.log);
+  //     });
+
+  //     chrome.identity.getProfileUserInfo({
+  //     accountStatus: chrome.identity.AccountStatus.ANY,
+  //   })
+  //   .then((user) => {
+  //     u = user;
+  //     console.log("User info:", user);
+  //   })
+    const rest = await fetchConversationsPreview();
+    console.log("Conversations preview:", rest);
   });
 
   let modalOpen = $state(false);
@@ -121,7 +149,7 @@
     title="Nouvele conversation"
     icon="mingcute:edit-line"
     onclick={() => {
-      // discussion = Discussion.new();
+      // discussion = Conversation.new();
       modalOpen = true;
     }}
   />
@@ -167,5 +195,5 @@
       </section>
     </main>
   </div>
-  <!-- <DiscussionView class="flex-1" {discussion} {open} /> -->
+  <!-- <ConversationView class="flex-1" {discussion} {open} /> -->
 </div>

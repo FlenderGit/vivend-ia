@@ -1,11 +1,11 @@
-import type { DiscussionData } from "../types";
+import type { ConversationData } from "../types";
 
 type Status = "pending" | "writing" | "resolved" | "rejected";
 
-export class Discussion {
+export class Conversation {
 
-  static new(): Discussion {
-    return new Discussion({
+  static new(): Conversation {
+    return new Conversation({
       id: "",
       title: "",
       icon: "",
@@ -15,7 +15,7 @@ export class Discussion {
     });
   }
 
-  private _data: DiscussionData = $state({
+  private _data: ConversationData = $state({
     id: "",
     title: "",
     icon: "",
@@ -27,7 +27,7 @@ export class Discussion {
   public bufferMessage: Array<string> = $state([]);
   private _status: Status = $state("pending");
 
-  constructor(data: DiscussionData) {
+  constructor(data: ConversationData) {
     this._data = data;
     this._status = "resolved";
   }
