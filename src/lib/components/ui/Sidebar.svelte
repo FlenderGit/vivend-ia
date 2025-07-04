@@ -1,16 +1,20 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import type { ConversationPreviewData, HTMLAsideAttributes } from "../../types";
+  import type {
+    ConversationPreviewData,
+    HTMLAsideAttributes,
+    User,
+  } from "../../types";
   import ClickableIcon from "./ClickableIcon.svelte";
-  import Icon from "@iconify/svelte";
-  import createPopperAction from "../../actions/popper";
   import ConversationPreview from "../conversation/ConversationPreview.svelte";
+  import ProfilePicture from "./ProfilePicture.svelte";
 
   type Props = {
     open?: boolean;
+    user: User;
   } & HTMLAsideAttributes;
 
-  let { open = $bindable(false), ...rest }: Props = $props();
+  let { open = $bindable(false), user, ...rest }: Props = $props();
   let selected_id = $state<string | null>("1");
   let selected_dropdown_id = $state<string | null>(null);
   let discussions: Array<ConversationPreviewData> = $state([
@@ -46,31 +50,43 @@
 </script>
 
 <aside
-  class="absolute z-40 sm:z-20 bg-neutral-200 sm:w-64 pt-12 p-4 inset-0 duration-500 transition-[opacity,transform,translate]"
+  class="absolute z-40 sm:z-20 bg-neutral-200 sm:w-64 pt-12 p-4 inset-0 duration-500 transition-[opacity,transform,translate] flex flex-col gap-4 justify-between"
   class:translate-x-[-100%]={!open}
   class:translate-x-0={open}
   class:opacity-0={!open}
   {...rest}
 >
-  <h2>Conversations</h2>
-  <nav>
-    <ul class="flex flex-col gap-2 font-semibold text-sm" role="list">
-      {#each discussions as discussion (discussion.id)}
-        <li
-          transition:fade={{ duration: 300 }}
-          class=""
-        >
-          <ConversationPreview
-            preview={discussion}
-            is_selected={selected_id === discussion.id}
-            is_dropdown_down={selected_dropdown_id === discussion.id}
-            ondropdown_clicked={() => {
-              selected_dropdown_id =
-                selected_dropdown_id === discussion.id ? null : discussion.id;
-            }}
-          />
-        </li>
-      {/each}
-    </ul>
-  </nav>
+  <div>
+    <h2>Conversations</h2>
+    <nav>
+      <ul class="flex flex-col gap-2 font-semibold text-sm" role="list">
+        {#each discussions as discussion (discussion.id)}
+          <li transition:fade={{ duration: 300 }} class="">
+            <ConversationPreview
+              preview={discussion}
+              is_selected={selected_id === discussion.id}
+              is_dropdown_down={selected_dropdown_id === discussion.id}
+              ondropdown_clicked={() => {
+                selected_dropdown_id =
+                  selected_dropdown_id === discussion.id ? null : discussion.id;
+              }}
+            />
+          </li>
+        {/each}
+      </ul>
+    </nav>
+  </div>
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <ProfilePicture {user} />
+      <div class="flex flex-col">
+        <p title={user.email}>{user.name}</p>
+        <span class="text-xs text-neutral-500">{user.email}</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-1">
+      <ClickableIcon icon="mdi:settings" />
+      <ClickableIcon icon="mdi:logout" />
+    </div>
+  </div>
 </aside>

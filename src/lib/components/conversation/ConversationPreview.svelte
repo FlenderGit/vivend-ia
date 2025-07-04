@@ -18,12 +18,20 @@
 
   const actions = [
     {
+      label: "Edit",
+      icon: "mdi:pencil-outline",
+    },
+    {
+      label: "Pin",
+      icon: "mdi:pin-outline",
+    },
+    {
       label: "Share",
-      icon: "mingcute:share-2-line",
+      icon: "mdi:share-outline",
     },
     {
       label: "Delete",
-      icon: "mingcute:delete-2-line",
+      icon: "mdi:delete-outline",
     },
   ];
 </script>

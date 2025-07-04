@@ -13,3 +13,7 @@ export {
 export {
     type ToastData,
 } from './components';
+
+export {
+    type User,
+} from './user';
