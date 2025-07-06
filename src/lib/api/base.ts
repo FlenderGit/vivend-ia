@@ -1,5 +1,6 @@
 import ky, { HTTPError } from "ky";
 import { fromPromise, type ResultAsync } from "neverthrow";
+import { toasts_store } from "../stores/toasts";
 
 class NetworkError extends Error {
   constructor(message: string, public statusCode?: number) {
@@ -35,6 +36,7 @@ export const api = ky.create({
     methods: ["get", "post", "put", "delete"],
     statusCodes: [408, 500, 502, 503, 504],
   },
+
 });
 
 const mapHttpError = (error: unknown) => {
@@ -68,6 +70,22 @@ const mapHttpError = (error: unknown) => {
   return new NetworkError(error.message || "Unknown network error");
 };
 
+function handleError(error: unknown): Error {
+  if (!(error instanceof Error)) {
+    error = new Error("An unknown error occurred");
+  }
+  console.error("API Error:", error);
+  toasts_store.update((toasts) => [
+    ...toasts,
+    {
+      type: "error",
+      message: (error as Error).message,
+      duration: 5000,
+    },
+  ]);
+  return mapHttpError(error);
+}
+
 export function safeRequest<T>(promise: Promise<T>): ResultAsync<T, Error> {
-  return fromPromise(promise, mapHttpError);
+  return fromPromise(promise, handleError);
 }
