@@ -8,10 +8,11 @@
     is_selected?: boolean;
     preview: ConversationPreviewData;
     is_dropdown_down?: boolean;
+    onclick: () => void;
     ondropdown_clicked?: () => void;
   };
 
-  let { preview, is_selected, is_dropdown_down, ondropdown_clicked }: Props =
+  let { preview, is_selected, is_dropdown_down, ondropdown_clicked, onclick }: Props =
     $props();
 
   let [usePopperElement, usePopperTooltip] = createPopperAction();
@@ -36,13 +37,14 @@
   ];
 </script>
 
-<div
-  class="rounded-xl hover:bg-neutral-300 px-3 py-1 flex items-center justify-between gap-1 cursor-pointer"
+<button
+  class="box-border w-full rounded-xl hover:bg-neutral-300 px-3 py-1 flex items-center justify-between gap-1 cursor-pointer transition-colors"
   title={preview.title}
   class:bg-neutral-300={is_selected}
   role="tab"
   aria-selected={is_selected}
   tabindex="0"
+  {onclick}
 >
   <div class="flex items-center gap-2 min-w-0 flex-1">
     <Icon icon={preview.icon} class="size-6 shrink-0" />
@@ -52,12 +54,13 @@
     <ClickableIcon
       icon="mingcute:more-1-fill"
       title="Details"
-      onclick={() => {
+      onclick={(e) => {
+        e.stopPropagation();
         ondropdown_clicked?.();
       }}
     />
   </div>
-</div>
+</button>
 {#if is_dropdown_down}
   <div
     use:usePopperTooltip={{

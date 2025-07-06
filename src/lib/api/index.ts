@@ -3,4 +3,4 @@ export {
     fetchConversationById,
     createConversation,
     sendMessageToConversation,
-} from './discussion';
+} from './conversation';

@@ -32,6 +32,10 @@ export class Conversation {
     this._status = "resolved";
   }
 
+  get id(): string {
+    return this._data.id;
+  }
+
   get title(): string {
     return this._data.title;
   }
