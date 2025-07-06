@@ -6,7 +6,7 @@
     onclickpromise: () => Promise<boolean | void>;
     onclick?: never;
   } | {
-    onclick?: () => void;
+    onclick?: (e: MouseEvent) => void;
     onclickpromise?: never;
   };
 
@@ -16,7 +16,7 @@
 
   const { icon, onclick, onclickpromise, title, ...rest }: Props = $props();
 
-  const handleClick = async (_: MouseEvent) => {
+  const handleClick = async (e: MouseEvent) => {
 
     if (onclickpromise) {
       state = "pending";
@@ -31,7 +31,7 @@
         state = "neutral";
       }
     } else if (onclick) {
-      onclick();
+      onclick(e);
     }
   };
 
