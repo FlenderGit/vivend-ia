@@ -8,6 +8,7 @@
   import ConversationPreview from "../conversation/ConversationPreview.svelte";
   import { onMount } from "svelte";
   import { history_conversation_store } from "$lib/stores/conversation_history";
+  import SettingModal from "../modal/SettingModal.svelte";
 
   type Props = {
     open?: boolean;
@@ -58,6 +59,8 @@
       selected_dropdown_id = null;
     }
   }
+
+  let is_editing = $state(false);
 </script>
 
 <svelte:window
@@ -136,8 +139,12 @@
       </div>
     </div>
     <div class="flex items-center gap-1">
-      <ClickableIcon icon="mdi:settings" />
+      <ClickableIcon icon="mdi:settings" onclick={() => {
+        is_editing = true;
+      }} />
       <ClickableIcon icon="mdi:logout" />
     </div>
   </div>
 </aside>
+
+<SettingModal bind:open={is_editing} />

@@ -3,6 +3,10 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import path from "path";
+import pkg from "./package.json" with { type: "json" };
+
+console.log("Vite config loaded", pkg.version);
+
 // import { crx } from "@crxjs/vite-plugin";
 // import manifest from "./manifest.json";
 
@@ -40,4 +44,10 @@ export default defineConfig({
     },
   },
   base: "",
+  define: {
+    __VERSION__: JSON.stringify(pkg.version),
+  },
+  esbuild: {
+    drop: ["console", "debugger"],
+  }
 });
