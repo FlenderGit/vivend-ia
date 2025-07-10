@@ -12,7 +12,6 @@ export class Conversation {
       title: "",
       icon: "",
       messages: [],
-      description: "",
       timestamp: new Date().getUTCHours(),
     });
   }

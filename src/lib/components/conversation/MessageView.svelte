@@ -44,8 +44,37 @@
           icon="mingcute:announcement-line"
           title="Play message"
           onclickpromise={async () => {
-            // Wait 3sec
-            await new Promise((resolve) => setTimeout(resolve, 3000));
+            if (!("speechSynthesis" in window)) {
+              throw new Error("Speech Synthesis non supportée");
+            }
+
+            if(speechSynthesis.getVoices().length === 0) {
+              // Load voices if not already loaded
+              await new Promise((resolve) => {
+                speechSynthesis.onvoiceschanged = resolve;
+              });
+            }
+
+            // Attendre que l'API soit prête
+            if (speechSynthesis.pending || speechSynthesis.speaking) {
+              speechSynthesis.cancel();
+            }
+
+            const utterance = new SpeechSynthesisUtterance(message.message);
+            utterance.lang = "en-US";
+            utterance.rate = 1;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            // Set a voice if available
+            const voices = speechSynthesis.getVoices();
+            if (voices.length > 0) {
+              utterance.voice = voices[2]; // Use the first available voice
+            }
+            // Wait for the speech to finish
+            speechSynthesis.speak(utterance);
+            await new Promise((resolve) => {
+              utterance.onend = resolve;
+            });
           }}
         />
       </footer>

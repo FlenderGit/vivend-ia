@@ -59,7 +59,6 @@
             Supprimer toutes les données
         </button>
         <i>Cette action est irréversible et supprimera toutes vos données.</i>
-
       {:else if tab_selected === "about"}
         <div class="mx-auto flex flex-col items-center gap-1">
           <Icon icon="mingcute:information-line" class="size-12" />

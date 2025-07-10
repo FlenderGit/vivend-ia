@@ -33,6 +33,12 @@
   });
 </script>
 
+<!-- <button onclick={() => {
+  sendMessageToConversation("1", "Hello, world!");
+}}>
+  Test
+</button> -->
+
 {#if $user_store === null}
   <LoginView />
 {:else}

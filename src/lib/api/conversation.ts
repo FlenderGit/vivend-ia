@@ -1,3 +1,4 @@
+import { getWebsiteUrl } from "$lib/utils";
 import type { ConversationData, ConversationPreviewData } from "../types";
 import { api, safeRequest, type ResultAsyncApi } from "./base";
 
@@ -5,28 +6,24 @@ const DISCUSSIONS: Array<ConversationPreviewData> = [
   {
     id: "1",
     title: "Conversation 1 - A very long title that should be truncated",
-    description: "This is a test description. That is a test description.",
     icon: "fluent-color:calendar-edit-16",
     timestamp: 1750231897,
   },
   {
     id: "2",
     title: "Conversation 2",
-    description: "Test",
     icon: "fluent-color:lightbulb-filament-16",
     timestamp: 1750230897,
   },
   {
     id: "3",
     title: "Conversation 3",
-    description: "Test",
     icon: "fluent-color:chat-16",
     timestamp: 1750201897,
   },
   {
     id: "4",
     title: "Conversation 4",
-    description: "Test",
     icon: "fluent-color:animal-paw-print-16",
     timestamp: 1750031897,
   },
@@ -35,7 +32,6 @@ const DISCUSSION: ConversationData = {
   id: "1",
   title: "My First Conversation",
   icon: "lucide:message-circle",
-  description: "This is a test discussion with some example messages.",
   timestamp: Date.now(),
   messages: [
     { role: "user", message: "Hello, how are you?" },
@@ -69,7 +65,7 @@ export function fetchConversationsPreview(): ResultAsyncApi<
       setTimeout(() => {
         resolve(DISCUSSIONS);
       }, 1000);
-    },
+    }
   );
 
   return safeRequest(simulatedPromise);
@@ -77,7 +73,7 @@ export function fetchConversationsPreview(): ResultAsyncApi<
 }
 
 export function fetchConversationById(
-  id: string,
+  id: string
 ): ResultAsyncApi<ConversationData> {
   // Simulate a response with a delay for demonstration purposes
   const simulatedPromise = new Promise<ConversationData>((resolve, reject) => {
@@ -102,7 +98,7 @@ export function fetchConversationById(
 }
 
 export function createConversation(
-  data: Partial<Omit<ConversationData, "id" | "timestamp">>,
+  data: Partial<Omit<ConversationData, "id" | "timestamp">>
 ): ResultAsyncApi<ConversationData> {
   // Simulate a successful creation with a delay
   const simulatedPromise = new Promise<ConversationData>((resolve) => {
@@ -122,13 +118,13 @@ export function createConversation(
       .post("conversation", {
         json: data,
       })
-      .json(),
+      .json()
   );
 }
 
 export function updateConversation(
   discussionId: string,
-  data: Partial<Omit<ConversationPreviewData, "id" | "timestamp">>,
+  data: Partial<Omit<ConversationPreviewData, "id" | "timestamp">>
 ): ResultAsyncApi<ConversationData> {
   // Simulate a successful update with a delay
   const simulatedPromise = new Promise<ConversationData>((resolve) => {
@@ -148,7 +144,7 @@ export function updateConversation(
       .put(`conversation/${discussionId}`, {
         json: data,
       })
-      .json(),
+      .json()
   );
 }
 
@@ -165,13 +161,20 @@ export function deleteConversation(discussionId: string): ResultAsyncApi<void> {
 
 export function sendMessageToConversation(
   discussionId: string,
-  message: string,
+  message: string
 ): ResultAsyncApi<ConversationData> {
-  return safeRequest(
-    api
+  async function ttt(): Promise<ConversationData> {
+    const tabName = await getWebsiteUrl();
+    console.log("Tab name:", tabName);
+    return api
       .post(`discussions/${discussionId}/messages`, {
         json: { message },
+        headers: {
+          "X-Tab-Name": tabName ?? "",
+        },
       })
-      .json(),
-  );
+      .json();
+  }
+
+  return safeRequest(ttt());
 }
