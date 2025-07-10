@@ -5,10 +5,7 @@
   import createPopperAction from "../../actions/popper";
   import ConversationForm from "../form/ConversationForm.svelte";
   import Modal from "../ui/Modal.svelte";
-  import { toasts_store } from "../../stores/toasts";
   import ModalDeleteConversation from "./ModalDeleteConversation.svelte";
-
-  const { addToast } = toasts_store;
 
   type Props = {
     is_selected?: boolean;
@@ -54,7 +51,7 @@
       icon: "mdi:delete-outline",
       onclick: () => {
         is_deleting = true;
-      }
+      },
     },
   ];
 </script>
@@ -100,15 +97,17 @@
   >
     <ul>
       {#each actions as action}
-        <li
-          class="flex items-center gap-2 p-2 hover:bg-neutral-200 rounded-lg cursor-pointer"
-          onclick={(e) => {
-            e.stopPropagation();
-            action.onclick?.();
-          }}
-        >
-          <Icon icon={action.icon} class="size-4" />
-          <p class="text-sm">{action.label}</p>
+        <li>
+          <button
+            class="flex items-center gap-2 p-2 hover:bg-neutral-200 rounded-lg cursor-pointer"
+            onclick={(e) => {
+              e.stopPropagation();
+              action.onclick?.();
+            }}
+          >
+            <Icon icon={action.icon} class="size-4" />
+            <p class="text-sm">{action.label}</p>
+          </button>
         </li>
       {/each}
     </ul>
@@ -117,15 +116,22 @@
 
 {#if is_editing}
   <Modal bind:open={is_editing}>
-    <ConversationForm conversation={preview} onSubmit={new_conversation => {
-      preview = new_conversation;
-      is_editing = false;
-    }} />
+    <ConversationForm
+      conversation={preview}
+      onSubmit={(new_conversation) => {
+        preview = new_conversation;
+        is_editing = false;
+      }}
+    />
   </Modal>
 {/if}
 
 {#if is_deleting}
-  <ModalDeleteConversation bind:open={is_deleting} {preview} onDelete={() => {
-    ondelete();
-  }} />
+  <ModalDeleteConversation
+    bind:open={is_deleting}
+    {preview}
+    onDelete={() => {
+      ondelete();
+    }}
+  />
 {/if}

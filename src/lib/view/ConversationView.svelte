@@ -8,7 +8,6 @@
   import { current_conversation_store } from "../stores/current_conversation";
   import { onMount } from "svelte";
   import Icon from "@iconify/svelte";
-  import ThemeForm from "../components/form/ThemeForm.svelte";
 
   type Props = {
     user: User;
@@ -21,6 +20,7 @@
 
   async function onsubmit(event: Event) {
     event.preventDefault();
+    if (input_ref === null) return;
     if (!$conversation) {
       console.error("No conversation available");
       return;
@@ -34,14 +34,14 @@
     }
   }
 
-  let input_ref: HTMLInputElement;
+  let input_ref: HTMLInputElement | null = $state(null);
 
   function handleKeyDown(event: KeyboardEvent) {
     const isCtrlPress = event.ctrlKey || event.metaKey;
     const isFocusOnInput = document.activeElement === input_ref;
     if (event.key === "Enter" && !isFocusOnInput && isCtrlPress) {
       event.preventDefault();
-      input_ref.focus();
+      input_ref?.focus();
     }
     if (isCtrlPress && event.key === "E") {
       event.preventDefault();
