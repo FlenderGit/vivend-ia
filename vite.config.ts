@@ -3,17 +3,18 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import path from "path";
-import pkg from "./package.json" with { type: "json" };
 
-console.log("Vite config loaded", pkg.version);
-
-// import { crx } from "@crxjs/vite-plugin";
-// import manifest from "./manifest.json";
+import { crx } from "@crxjs/vite-plugin";
+import manifest from "./manifest.json" with { type: "json" };
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    // crx({ manifest}),
+    crx({ manifest,
+      contentScripts: {
+        injectCss: true,
+      }
+    }),
     tailwindcss(),
     svelte({
       compilerOptions: {
@@ -43,9 +44,9 @@ export default defineConfig({
       },
     },
   },
-  base: "",
+  // base: "",
   define: {
-    __VERSION__: JSON.stringify(pkg.version),
+    __VERSION__: JSON.stringify(manifest.version),
   },
   esbuild: {
     drop: ["console", "debugger"],
