@@ -16,6 +16,7 @@
     "@iconify/svelte": "^5.0.0",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tsconfig/svelte": "^5.0.4",
+    "@types/node": "^24.0.12",
     "rollup-plugin-visualizer": "^6.0.3",
     "svelte": "^5.28.1",
     "svelte-check": "^4.1.6",
