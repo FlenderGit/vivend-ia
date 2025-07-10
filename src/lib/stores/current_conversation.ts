@@ -26,15 +26,16 @@ function createCurrentConversationStore() {
           id: "",
           title: "Default Conversation",
           icon: "default-icon",
-          description: "This is a default conversation.",
           timestamp: Date.now(),
-          messages: [{
-            role: "assistant",
-            message: "Welcome to the default conversation! How can I assist you today?",
-          }],
+          messages: [
+            {
+              role: "assistant",
+              message:
+                "Welcome to the default conversation! How can I assist you today?",
+            },
+          ],
         })
-      )
-
+      );
     },
 
     async loadNewConversation(id: string) {

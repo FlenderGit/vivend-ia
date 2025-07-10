@@ -22,6 +22,7 @@
 {:else}
     <div
         class="{BASE_CSS} flex items-center justify-center bg-primary text-white rounded-full"
+        title={user.name}
     >
         <span class="font-semibold text-lg">{extractInitials(user.name)}</span>
     </div>

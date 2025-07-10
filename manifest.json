@@ -5,7 +5,7 @@
 
   "description": "Test",
 
-  "permissions": ["sidePanel", "identity", "storage"],
+  "permissions": ["sidePanel", "identity", "storage", "activeTab"],
 
   "side_panel": {
     "default_path": "dist/index.html",

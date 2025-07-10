@@ -5,6 +5,7 @@
   --color-background: light-dark(#f7f7f7, #222);
 
   --color-text: light-dark(#222, #fefefe);
+  --color-link: light-dark(#007bff, #66b3ff);
   --color-text-light: light-dark(#888, #ddd);
   --color-border: light-dark(#dde, #333);
 
@@ -36,6 +37,10 @@
 
   button {
     @apply cursor-pointer
+  }
+
+  a {
+    @apply text-link hover:underline;
   }
 }
 

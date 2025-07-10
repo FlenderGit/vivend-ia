@@ -11,9 +11,7 @@
   import Input from "$lib/components/Input.svelte";
 
   type Props = {
-    user: User;
   };
-  const { user }: Props = $props();
   const { conversation, isLoading, error } = current_conversation_store;
 
   let open = $state(false);
@@ -52,13 +50,20 @@
   onMount(() => {
     current_conversation_store.loadNewConversation("2");
 
+    // Get the page name
+    chrome.tabs?.query({ active: true, currentWindow: true }, (tabs) => {
+      console.log("Current tab:", tabs);
+      if (tabs[0]) {
+        console.log("Titre:", tabs[0].title);
+        console.log("URL:", tabs[0].url);
+      }
+    });
   });
 
   let modalOpen = $state(false);
 </script>
 
 <svelte:window onkeydown={handleKeyDown} />
-
 
 <Modal bind:open={modalOpen}>
   {#snippet header()}
@@ -90,7 +95,6 @@
 
 <div class="flex h-screen bg-neutral-200">
   <Sidebar
-    {user}
     aria-label="Liste des précédentes conversations"
     aria-keyshortcuts="Ctrl+E"
     bind:open
@@ -107,16 +111,23 @@
         'sm:rounded-xl'}"
     >
       {#if $isLoading}
-        <Icon icon="line-md:loading-loop" class="animate-spin m-auto text-4xl opacity-75" />
+        <Icon
+          icon="line-md:loading-loop"
+          class="animate-spin m-auto text-4xl opacity-75"
+        />
       {:else if $error}
         <p class="text-red-500 opacity-75 m-auto">Erreur: {$error.message}</p>
       {:else if $conversation}
-        <MessageAreaView discussion={$conversation} class="flex-1 overflow-y-auto" />
+        <MessageAreaView
+          discussion={$conversation}
+          class="flex-1 overflow-y-auto"
+        />
         <section>
           <form {onsubmit}>
             <Input
               aria-keyshortcuts="Ctrl+Enter"
-              disabled={$conversation.status === "pending"}
+              disabled={$conversation.status === "pending" ||
+                $conversation.status === "writing"}
               type="text"
               placeholder="Type your message here..."
               class="input lshadow"

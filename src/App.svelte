@@ -1,24 +1,27 @@
 <script lang="ts">
-  import type { ToastData, User } from "./lib/types";
+  import type { User } from "./lib/types";
   import Toast from "./lib/components/ui/Toast.svelte";
   import LoginView from "./lib/view/LoginView.svelte";
   import ConversationView from "./lib/view/ConversationView.svelte";
   import { onMount } from "svelte";
   import { theme_store } from "./lib/stores/theme";
   import { toasts_store } from "./lib/stores/toasts";
+  import { user_store } from "$lib/stores/user";
 
-  let user: User | null = $state(null);
   onMount(() => {
-    // chrome.storage.local.get(["user"], (result) => {
-    //   if (result.user) {
-    //     user = result.user;
-    //   }
-    // });
-    user = {
-      id: "1",
-      name: "John Doe",
-      email: "john.doe@me.com",
-    };
+    if (import.meta.env.DEV) {
+      $user_store = {
+        id: "1",
+        name: "John Doe",
+        email: "john.doe@me.com",
+      };
+    } else {
+      chrome.storage.local.get(["user"], (result) => {
+        if (result.user) {
+          $user_store = result.user;
+        }
+      });
+    }
   });
 
   $effect(() => {
@@ -30,10 +33,10 @@
   });
 </script>
 
-{#if user === null}
-  <LoginView bind:user />
+{#if $user_store === null}
+  <LoginView />
 {:else}
-  <ConversationView {user} />
+  <ConversationView />
 {/if}
 
 <div class="absolute right-4 top-4 z-50">

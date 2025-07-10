@@ -1,5 +1,5 @@
 import ky, { HTTPError } from "ky";
-import { fromPromise, type ResultAsync } from "neverthrow";
+import { err, fromPromise, type ResultAsync } from "neverthrow";
 import { toasts_store } from "../stores/toasts";
 
 class NetworkError extends Error {
@@ -43,7 +43,10 @@ export const api = ky.create({
 
 const mapHttpError = (error: unknown) => {
   if (!(error instanceof HTTPError)) {
-    return new NetworkError("Unknown error occurred");
+    if (typeof error === "string" && error.includes("fetch")) {
+      return new NetworkError("Network request failed, please check your connection");
+    }
+    return new NetworkError("Unknown error occurred" + error);
   }
   if (error.name === "HTTPError") {
     const status = error.response?.status;

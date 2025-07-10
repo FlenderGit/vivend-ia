@@ -9,14 +9,14 @@
   import { onMount } from "svelte";
   import { history_conversation_store } from "$lib/stores/conversation_history";
   import SettingModal from "../modal/SettingModal.svelte";
+  import { user_store } from "$lib/stores/user";
 
   type Props = {
     open?: boolean;
-    user: User;
   } & HTMLAsideAttributes;
 
-  let { open = $bindable(false), user, ...rest }: Props = $props();
-
+  let { open = $bindable(false), ...rest }: Props = $props();
+  //
   const { conversation, isLoading } = current_conversation_store;
   const selected_id = $derived($conversation?.id || null);
 
@@ -132,17 +132,32 @@
   </div>
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
-      <ProfilePicture {user} />
-      <div class="flex flex-col">
-        <p title={user.email}>{user.name}</p>
-        <span class="text-xs text-neutral-500">{user.email}</span>
-      </div>
+      {#if $user_store === null}
+        <p>No user logged in</p>
+      {:else}
+        <ProfilePicture user={$user_store} />
+        <div class="flex flex-col">
+          <p title={$user_store.email}>{$user_store.name}</p>
+          <span class="text-xs text-neutral-500">{$user_store.email}</span>
+        </div>
+      {/if}
     </div>
     <div class="flex items-center gap-1">
-      <ClickableIcon icon="mdi:settings" onclick={() => {
-        is_editing = true;
-      }} />
-      <ClickableIcon icon="mdi:logout" />
+      <ClickableIcon
+        icon="mdi:settings"
+        onclick={() => {
+          is_editing = true;
+        }}
+      />
+      <ClickableIcon
+        icon="mdi:logout"
+        onclick={() => {
+          if (import.meta.env.PROD) {
+            chrome.storage.local.remove("user");
+          }
+          $user_store = null;
+        }}
+      />
     </div>
   </div>
 </aside>

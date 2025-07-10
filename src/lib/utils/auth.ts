@@ -1,6 +1,6 @@
 import { api, safeRequest, type ResultAsyncApi } from "../api/base";
 import type { User } from "../types";
-import { err, ok, Result, ResultAsync } from "neverthrow";
+import { err, errAsync, ok, Result, ResultAsync } from "neverthrow";
 
 const EXTENSION_ID = chrome.runtime.id;
 
@@ -16,6 +16,9 @@ const AZURE_CONFIG = {
 const AZURE_ENDPOINT = `https://login.microsoftonline.com/${AZURE_CONFIG.tenantId}/oauth2/v2.0`;
 
 export function authenticateUser(): ResultAsyncApi<User> {
+    if (!AZURE_CONFIG.clientId || !AZURE_CONFIG.tenantId || !AZURE_CONFIG.redirectUri) {
+        return errAsync(new Error("Azure configuration is incomplete."));
+    }
     return launchWebAuthFlow()
         .andThen(extractTokenFromUrl)
         .andThen(getDataFromToken)
