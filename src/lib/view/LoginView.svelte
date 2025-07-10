@@ -40,9 +40,7 @@
             const result = await authenticateUser();
             if (result.isOk()) {
                 state = "success";
-
                 chrome.storage.local.set({ user: result.value });
-
                 await wait(1000);
                 user = result.value;
             } else {

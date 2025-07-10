@@ -39,9 +39,17 @@
 
   function loadNewConversationLinked(id: string) {
     loading_id = id;
-    current_conversation_store.loadNewConversation(id).finally(() => {
-      loading_id = null;
-    });
+    current_conversation_store
+      .loadNewConversation(id)
+      .then(() => {
+        // If on small screen, clone the sidebar
+        if (window.innerWidth <= 640) {
+          open = false;
+        }
+      })
+      .finally(() => {
+        loading_id = null;
+      });
   }
 
   // Close the dropdown when clicking outside of it
