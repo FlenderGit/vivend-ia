@@ -5,8 +5,9 @@
   import ProfilePicture from "./ProfilePicture.svelte";
   import { fetchConversationsPreview } from "../../api";
   import { current_conversation_store } from "../../stores/current_conversation";
-  import { useApi } from "$lib/hooks/api.svelte";
   import ConversationPreview from "../conversation/ConversationPreview.svelte";
+  import { onMount } from "svelte";
+  import { history_conversation_store } from "$lib/stores/conversation_history";
 
   type Props = {
     open?: boolean;
@@ -17,10 +18,24 @@
 
   const { conversation, isLoading } = current_conversation_store;
   const selected_id = $derived($conversation?.id || null);
+
   let loading_id = $state<string | null>(null);
   let selected_dropdown_id = $state<string | null>(null);
 
-  const conversationRequest = useApi(fetchConversationsPreview);
+  let { isLoading: isConversationsLoading, conversations } =
+    history_conversation_store;
+
+  // const conversationRequest = useApi(fetchConversationsPreview);
+  onMount(() => {
+    fetchConversationsPreview().match(
+      (data) => {
+        history_conversation_store.setConversations(data);
+      },
+      (error) => {
+        console.error("Failed to fetch conversations:", error);
+      }
+    );
+  });
 
   function loadNewConversationLinked(id: string) {
     loading_id = id;
@@ -29,16 +44,7 @@
     });
   }
 
-  // This will hold the conversations data
-  let conversations = $state(conversationRequest.data || []);
-  $effect(() => {
-    if (conversationRequest.data) {
-      conversations = conversationRequest.data;
-    }
-  });
-
-  // const conversations_promise = fetchConversationsPreview();
-
+  // Close the dropdown when clicking outside of it
   function handleGlobalClickCloseDropdown() {
     if (selected_dropdown_id) {
       selected_dropdown_id = null;
@@ -65,21 +71,21 @@
   <div>
     <h2>Conversations</h2>
     <nav>
-      {#if conversationRequest.isLoading}
+      {#if $isConversationsLoading}
         <p>Loading...</p>
-      {:else if conversationRequest.error}
+      {:else if false}
         <div class="error">
-          <p>Erreur: {conversationRequest.error.message}</p>
+          <p>Erreur: TD</p>
         </div>
-      {:else if conversationRequest.data}
+      {:else if $conversations}
         <ul class="flex flex-col gap-2 font-semibold text-sm" role="list">
-          {#each conversations as discussion, i (discussion.id)}
+          {#each $conversations as discussion, i (discussion.id)}
             <li
               transition:fade={{ duration: 300 }}
               class:animate-pulse={$isLoading && loading_id === discussion.id}
             >
               <ConversationPreview
-                bind:preview={conversations[i]}
+                bind:preview={$conversations[i]}
                 is_selected={selected_id === discussion.id}
                 is_dropdown_down={selected_dropdown_id === discussion.id}
                 ondropdown_clicked={() => {
@@ -90,13 +96,11 @@
                 }}
                 ondelete={() => {
                   if (discussion.id === discussion.id) {
-                    const new_id = conversations[i + 1]?.id || "exemple";
+                    const new_id = $conversations[i + 1]?.id || "exemple";
                     loadNewConversationLinked(new_id);
                   }
 
-                  conversations = conversations.filter(
-                    (d) => d.id !== discussion.id
-                  );
+                  history_conversation_store.removeConversation(discussion.id);
                 }}
                 onclick={() => {
                   if (selected_id === discussion.id) return;

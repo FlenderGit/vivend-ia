@@ -2,6 +2,7 @@
   import { updateConversation } from "$lib/api/conversation";
   import { toasts_store } from "$lib/stores/toasts";
   import type { ConversationPreviewData } from "../../types";
+  import Input from "../Input.svelte";
 
   type Props = {
     conversation: ConversationPreviewData;
@@ -37,20 +38,22 @@
   }
 </script>
 
-<form onsubmit={handleSubmit}>
-  <label>
+<form onsubmit={handleSubmit} class="flex flex-col">
+  <label class="label">
     Title
-    <input
+    <Input
+      size="small"
       type="text"
       bind:value={new_conversation.title}
       placeholder="Enter conversation title"
       class="input"
     />
   </label>
-  <label>
+  <label class="label">
     Icon
-    <input
+    <Input
       type="text"
+      size="small"
       bind:value={new_conversation.icon}
       placeholder="Enter conversation icon"
       class="input"

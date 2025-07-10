@@ -7,3 +7,5 @@ export type ToastData = {
 
 export type Toast = ToastData & { id: string };
 
+export type Size = "small" | "medium" | "large";
+

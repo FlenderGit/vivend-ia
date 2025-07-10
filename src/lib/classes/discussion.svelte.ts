@@ -1,3 +1,5 @@
+import { createConversation } from "$lib/api";
+import { history_conversation_store } from "$lib/stores/conversation_history";
 import type { ConversationData } from "../types";
 
 type Status = "pending" | "writing" | "resolved" | "rejected";
@@ -66,6 +68,25 @@ export class Conversation {
 
   async sendMessageToAi(message: string): Promise<void> {
     this._status = "pending";
+
+    // If default one
+    if (this._data.id === "") {
+      await createConversation({
+        messages: [{
+          role: "user",
+          message,
+        }]
+      }).match(
+        (data) => {
+          this._data = data;
+          history_conversation_store.addConversation(data);
+        },
+        (error) => {
+          throw new Error(`Failed to create conversation: ${error.message}`);
+        }
+      );
+    }
+
     this.addMessage(message, "user");
     // Simulate an AI response with a delay
     await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -81,11 +102,9 @@ export class Conversation {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 
-    // this.addMessage("This is a placeholder response.", "assistant");
     await new Promise(resolve => setTimeout(resolve, 400));
     this.addMessage(this.currentMessage, "assistant");
     this.bufferMessage = [];
-
 
     this._status = "resolved";
   }

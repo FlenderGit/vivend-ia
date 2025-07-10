@@ -99,7 +99,7 @@
       {#each actions as action}
         <li>
           <button
-            class="flex items-center gap-2 p-2 hover:bg-neutral-200 rounded-lg cursor-pointer"
+            class="flex items-center gap-2 p-2 hover:bg-neutral-200 rounded-lg cursor-pointer w-full"
             onclick={(e) => {
               e.stopPropagation();
               action.onclick?.();
@@ -116,6 +116,9 @@
 
 {#if is_editing}
   <Modal bind:open={is_editing}>
+    {#snippet header()}
+      <h2 class="text-lg font-semibold">Edit Conversation</h2>
+    {/snippet}
     <ConversationForm
       conversation={preview}
       onSubmit={(new_conversation) => {

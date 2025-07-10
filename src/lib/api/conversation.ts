@@ -102,8 +102,21 @@ export function fetchConversationById(
 }
 
 export function createConversation(
-  data: Omit<ConversationPreviewData, "id" | "timestamp">,
+  data: Partial<Omit<ConversationData, "id" | "timestamp">>,
 ): ResultAsyncApi<ConversationData> {
+  // Simulate a successful creation with a delay
+  const simulatedPromise = new Promise<ConversationData>((resolve) => {
+    setTimeout(() => {
+      resolve({
+        ...DISCUSSION,
+        timestamp: Date.now(),
+        id: crypto.randomUUID(),
+        ...data,
+      });
+    }, 1000);
+  });
+  return safeRequest(simulatedPromise);
+
   return safeRequest(
     api
       .post("conversation", {

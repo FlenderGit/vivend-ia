@@ -8,12 +8,12 @@
   import { current_conversation_store } from "../stores/current_conversation";
   import { onMount } from "svelte";
   import Icon from "@iconify/svelte";
+  import Input from "$lib/components/Input.svelte";
 
   type Props = {
     user: User;
   };
   const { user }: Props = $props();
-
   const { conversation, isLoading, error } = current_conversation_store;
 
   let open = $state(false);
@@ -81,8 +81,7 @@
     title="Nouvele conversation"
     icon="mingcute:edit-line"
     onclick={() => {
-      // discussion = Conversation.new();
-      modalOpen = true;
+      current_conversation_store.loadDefaultConversation();
     }}
   />
 </header>
@@ -115,7 +114,7 @@
         <MessageAreaView discussion={$conversation} class="flex-1 overflow-y-auto" />
         <section>
           <form {onsubmit}>
-            <input
+            <Input
               aria-keyshortcuts="Ctrl+Enter"
               disabled={$conversation.status === "pending"}
               type="text"
@@ -124,7 +123,7 @@
               autocomplete="off"
               autocorrect="off"
               autocapitalize="off"
-              bind:this={input_ref}
+              bind:ref={input_ref}
               aria-label="Type your message"
               aria-describedby="input-hint"
             />

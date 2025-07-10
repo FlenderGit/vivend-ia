@@ -20,6 +20,23 @@ function createCurrentConversationStore() {
       return error;
     },
 
+    loadDefaultConversation() {
+      conversation.set(
+        new Conversation({
+          id: "",
+          title: "Default Conversation",
+          icon: "default-icon",
+          description: "This is a default conversation.",
+          timestamp: Date.now(),
+          messages: [{
+            role: "assistant",
+            message: "Welcome to the default conversation! How can I assist you today?",
+          }],
+        })
+      )
+
+    },
+
     async loadNewConversation(id: string) {
       // Fetch api
       console.log("Loading conversation with id:", id);
