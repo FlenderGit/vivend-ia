@@ -41,7 +41,7 @@
     <Toast
       {toast}
       onclose={() => {
-        toasts_store.update((toasts) => toasts.filter((t) => t !== toast));
+        toasts_store.removeToast(toast.id);
       }}
     />
   {/each}

@@ -69,7 +69,7 @@ export function fetchConversationsPreview(): ResultAsyncApi<
       setTimeout(() => {
         resolve(DISCUSSIONS);
       }, 1000);
-    }
+    },
   );
 
   return safeRequest(simulatedPromise);
@@ -77,7 +77,7 @@ export function fetchConversationsPreview(): ResultAsyncApi<
 }
 
 export function fetchConversationById(
-  id: string
+  id: string,
 ): ResultAsyncApi<ConversationData> {
   // Simulate a response with a delay for demonstration purposes
   const simulatedPromise = new Promise<ConversationData>((resolve, reject) => {
@@ -102,43 +102,63 @@ export function fetchConversationById(
 }
 
 export function createConversation(
-  data: Omit<ConversationPreviewData, "id" | "timestamp">
+  data: Omit<ConversationPreviewData, "id" | "timestamp">,
 ): ResultAsyncApi<ConversationData> {
   return safeRequest(
     api
       .post("conversation", {
         json: data,
       })
-      .json()
+      .json(),
   );
 }
 
 export function updateConversation(
   discussionId: string,
-  data: Partial<Omit<ConversationPreviewData, "id" | "timestamp">>
+  data: Partial<Omit<ConversationPreviewData, "id" | "timestamp">>,
 ): ResultAsyncApi<ConversationData> {
+  // Simulate a successful update with a delay
+  const simulatedPromise = new Promise<ConversationData>((resolve) => {
+    setTimeout(() => {
+      resolve({
+        ...DISCUSSION,
+        timestamp: Date.now(),
+        id: discussionId,
+        ...data,
+      });
+    }, 1000);
+  });
+  return safeRequest(simulatedPromise);
+
   return safeRequest(
     api
       .put(`conversation/${discussionId}`, {
         json: data,
       })
-      .json()
+      .json(),
   );
 }
 
 export function deleteConversation(discussionId: string): ResultAsyncApi<void> {
+  // Simulate a successful deletion with a delay
+  const simulatedPromise = new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 1000);
+  });
+  return safeRequest(simulatedPromise);
   return safeRequest(api.delete(`discussions/${discussionId}`).json());
 }
 
 export function sendMessageToConversation(
   discussionId: string,
-  message: string
+  message: string,
 ): ResultAsyncApi<ConversationData> {
   return safeRequest(
     api
       .post(`discussions/${discussionId}/messages`, {
         json: { message },
       })
-      .json()
+      .json(),
   );
 }
