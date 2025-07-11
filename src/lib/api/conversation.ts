@@ -1,4 +1,5 @@
 import { getWebsiteUrl } from "$lib/utils";
+import type { ReadableStreamDefaultReader } from "stream/web";
 import type { ConversationData, ConversationPreviewData } from "../types";
 import { api, safeRequest, type ResultAsyncApi } from "./base";
 
@@ -159,21 +160,52 @@ export function deleteConversation(discussionId: string): ResultAsyncApi<void> {
   return safeRequest(api.delete(`discussions/${discussionId}`).json());
 }
 
+type SseEvent = {
+  type: "message";
+  data: string;
+};
+
+async function* handleSse(
+  reader: ReadableStreamDefaultReader<Uint8Array>
+): AsyncGenerator<SseEvent> {
+  const decoder = new TextDecoder();
+  let buffer = "";
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    const text = decoder.decode(value, { stream: true });
+    buffer += text;
+    const lines = buffer.split("\n");
+    for (const line of lines) {
+      if (line.startsWith("data: ")) {
+        const data = line.replace("data: ", "");
+        yield { type: "message", data };
+      }
+    }
+  }
+}
+
 export function sendMessageToConversation(
   discussionId: string,
   message: string
-): ResultAsyncApi<ConversationData> {
-  async function ttt(): Promise<ConversationData> {
+): ResultAsyncApi<AsyncGenerator<SseEvent>> {
+  async function ttt() {
     const tabName = await getWebsiteUrl();
     console.log("Tab name:", tabName);
     return api
-      .post(`discussions/${discussionId}/messages`, {
-        json: { message },
+      .get(`discussions/${discussionId}/messages`, {
         headers: {
           "X-Tab-Name": tabName ?? "",
         },
+        json: {
+          message,
+        },
       })
-      .json();
+      .then((response) => {
+        const reader = response.body?.getReader();
+        if (!reader) throw new Error("Failed to get reader");
+        return handleSse(reader);
+      });
   }
 
   return safeRequest(ttt());
