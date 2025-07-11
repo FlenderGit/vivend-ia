@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-stats.html
+generated
 .env
+dist.*
