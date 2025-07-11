@@ -2,6 +2,7 @@
   import Icon from "@iconify/svelte";
   import ThemeForm from "../form/ThemeForm.svelte";
   import Modal from "../ui/Modal.svelte";
+  import Input from "../Input.svelte";
 
   type Props = {
     open?: boolean;
@@ -9,8 +10,25 @@
 
   let { open = $bindable(false) }: Props = $props();
 
-  const TABS = ["general", "appearance", "privacy", "about"] as const;
-  type Tabs = (typeof TABS)[number];
+  const TABS = [{
+    id: "general",
+    label: "General",
+    icon: "mdi:settings"
+  }, {
+    id: "appearance",
+    label: "Appearance",
+    icon: "mdi:palette"
+  }, {
+    id: "privacy",
+    label: "Privacy",
+    icon: "mdi:lock"
+  }, {
+    id: "about",
+    label: "About",
+    icon: "mdi:information"
+  }]
+
+  type Tabs = typeof TABS[number]["id"];
 
   const ABOUT_DATA = {
     lastUpdate: "2023-10-01",
@@ -27,15 +45,20 @@
   {/snippet}
 
   <div class="flex flex-col sm:flex-row">
-    <nav class="sm:border-r border-neutral-300">
+    <nav class="sm:border-r border-neutral-300 pr-4">
       <ul class="flex sm:flex-col">
         {#each TABS as tab}
           <li>
             <button
-              onclick={() => (tab_selected = tab)}
-              class="p-2 hover:bg-neutral-200 rounded-lg w-full text-left"
+              onclick={() => (tab_selected = tab.id)}
+              class:bg-primary={tab_selected === tab.id}
+              class={[
+                "flex items-center gap-2 rounded-lg w-full text-left p-2 transition-all",
+                tab_selected === tab.id ? "text-white bg-primary" : "hover:bg-neutral-200"
+              ]}
             >
-              {tab}
+              <Icon icon={tab.icon} class="size-4 mr-2" />
+              {tab.label}
             </button>
           </li>
         {/each}
