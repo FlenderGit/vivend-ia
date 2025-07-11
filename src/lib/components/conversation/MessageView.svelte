@@ -20,6 +20,7 @@
         <ClickableIcon
           icon="mingcute:copy-line"
           title="Copy message"
+          popper={true}
           onclickpromise={async () => {
             try {
               await navigator.clipboard.writeText(message.message);
@@ -32,6 +33,7 @@
         <ClickableIcon
           icon="mingcute:share-3-line"
           title="Share message"
+          popper={true}
           onclickpromise={async () => {
             await navigator.share({
               title: "Shared Message",
@@ -43,6 +45,7 @@
         <ClickableIcon
           icon="mingcute:announcement-line"
           title="Play message"
+          popper={true}
           onclickpromise={async () => {
             if (!("speechSynthesis" in window)) {
               throw new Error("Speech Synthesis non supportée");

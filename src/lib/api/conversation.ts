@@ -195,7 +195,10 @@ export function sendMessageToConversation(
     return api
       .get(`discussions/${discussionId}/messages`, {
         headers: {
-          "X-Tab-Name": tabName ?? "",
+          ...{
+            "X-Tab-Name": tabName,
+          },
+          "X-Requested-With": "Vivendia",
         },
         json: {
           message,
