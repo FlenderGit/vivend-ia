@@ -57,22 +57,23 @@
 </script>
 
 <button
-  class="box-border w-full rounded-xl hover:bg-neutral-300 px-3 py-1 flex items-center justify-between gap-1 cursor-pointer transition-colors"
+  class="box-border group w-full rounded-xl hover:bg-background-tertiary px-3 py-2 flex items-center justify-between gap-1 cursor-pointer transition-colors"
   title={preview.title}
-  class:bg-neutral-300={is_selected}
+  class:bg-background-tertiary={is_selected}
   role="tab"
   aria-selected={is_selected}
   tabindex="0"
   {onclick}
 >
   <div class="flex items-center gap-2 min-w-0 flex-1">
-    <Icon icon={preview.icon} class="size-6 shrink-0" />
+    <!-- <Icon icon={preview.icon} class="size-6 shrink-0" /> -->
     <p class="truncate">{preview.title}</p>
   </div>
   <div use:usePopperElement>
     <ClickableIcon
       icon="mingcute:more-1-fill"
       title="Details"
+      class="{!is_selected && "hidden"} group-hover:block"
       onclick={(e) => {
         e.stopPropagation();
         ondropdown_clicked?.();
@@ -93,13 +94,13 @@
         },
       ],
     }}
-    class="p-2 bg-neutral-100 rounded-xl shadow-lg border border-neutral-300 z-50 w-48"
+    class="p-2 bg-background rounded-xl shadow-lg border border-background-tertiary z-50 w-48"
   >
     <ul>
       {#each actions as action}
         <li>
           <button
-            class="flex items-center gap-2 p-2 hover:bg-neutral-200 rounded-lg cursor-pointer w-full"
+            class="button hover:bg-background-secondary"
             onclick={(e) => {
               e.stopPropagation();
               action.onclick?.();

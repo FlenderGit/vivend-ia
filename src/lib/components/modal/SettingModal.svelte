@@ -45,7 +45,7 @@
   {/snippet}
 
   <div class="flex flex-col sm:flex-row">
-    <nav class="sm:border-r border-neutral-300 pr-4">
+    <nav class="sm:border-r border-background-tertiary pr-4">
       <ul class="flex sm:flex-col">
         {#each TABS as tab}
           <li>
@@ -54,7 +54,7 @@
               class:bg-primary={tab_selected === tab.id}
               class={[
                 "flex items-center gap-2 rounded-lg w-full text-left p-2 transition-all",
-                tab_selected === tab.id ? "text-white bg-primary" : "hover:bg-neutral-200"
+                tab_selected === tab.id ? "text-white bg-primary" : "hover:bg-neutral-500/15"
               ]}
             >
               <Icon icon={tab.icon} class="size-4 mr-2" />

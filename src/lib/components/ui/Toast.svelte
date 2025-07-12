@@ -39,11 +39,11 @@
   function getClassColor(toast: ToastData) {
     switch (toast.type) {
       case "success":
-        return "bg-green-100 text-green-800";
+        return "bg-success text-success";
       case "error":
-        return "bg-red-100 text-red-800";
+        return "bg-danger text-danger";
       case "info":
-        return " text-blue-800 border-blue-800";
+        return " text-info border-info";
       default:
         return "bg-neutral-100 text-neutral-800";
     }
@@ -53,14 +53,15 @@
 <div
   aria-atomic="true"
   aria-live="polite"
-  class="bg-neutral-100 lshadow rounded-lg p-4 border-l-4 {getClassColor(toast)} "
+  class="bg-neutral-100 lshadow rounded-lg p-4 border-l-4 {getClassColor(
+    toast
+  )}"
 >
   <div class="flex-1 flex items-center gap-4">
-      <Icon
-        icon={getIcon(toast)}
-        class="text-xl"
-        style="width: 1.5em; height: 1.5em;"
-      />
+    <Icon
+      icon={getIcon(toast)}
+      class="text-xl size-6"
+    />
 
     <div>
       <p>{toast.message}</p>

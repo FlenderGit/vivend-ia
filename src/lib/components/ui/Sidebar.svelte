@@ -10,6 +10,7 @@
   import { history_conversation_store } from "$lib/stores/conversation_history";
   import SettingModal from "../modal/SettingModal.svelte";
   import { user_store } from "$lib/stores/user";
+  import Icon from "@iconify/svelte";
 
   type Props = {
     open?: boolean;
@@ -73,14 +74,24 @@
 />
 
 <aside
-  class="absolute z-40 sm:z-20 bg-neutral-200 sm:w-64 pt-12 p-4 inset-0 duration-500 transition-[opacity,transform,translate] flex flex-col gap-4 justify-between"
+  class="absolute z-40 sm:z-20 sm:w-64 pt-12 p-4 inset-0 duration-500 transition-[opacity,transform,translate] flex flex-col gap-4 justify-between"
   class:translate-x-[-100%]={!open}
   class:translate-x-0={open}
   class:opacity-0={!open}
   {...rest}
 >
-  <div>
-    <h2>Conversations</h2>
+  <div class="font-semibold text-sm">
+    <button class="button hover:bg-neutral-300" disabled>
+      <Icon icon="mingcute:edit-line" class="size-5" />
+      Nouvelle conversation
+    </button>
+    <button class="button hover:bg-neutral-300" disabled>
+      <Icon icon="mingcute:search-2-line" class="size-5" />
+      Rechercher
+    </button>
+
+    <h2 class="my-4 text-sm opacity-50">Conversations</h2>
+
     <nav>
       {#if $isConversationsLoading}
         <p>Loading...</p>
@@ -89,7 +100,7 @@
           <p>Erreur: TD</p>
         </div>
       {:else if $conversations}
-        <ul class="flex flex-col gap-2 font-semibold text-sm" role="list">
+        <ul class="flex flex-col gap-2" role="list">
           {#each $conversations as discussion, i (discussion.id)}
             <li
               transition:fade={{ duration: 300 }}

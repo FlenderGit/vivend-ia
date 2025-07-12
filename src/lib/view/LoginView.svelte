@@ -59,7 +59,7 @@
   </button>
   <small>Please authenticate yourself to access your account.</small>
 
-  <small class="text-red-500 text-center" hidden={!error}>
+  <small class="text-danger text-center" hidden={!error}>
     {error}
   </small>
 </main>

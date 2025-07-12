@@ -55,11 +55,11 @@
 
 {#snippet IconStatus()}
   {#if status === "success"}
-    <Icon icon="line-md:check-all" class="text-green-500" />
+    <Icon icon="line-md:check-all" class="text-success" />
   {:else if status === "error"}
-    <Icon icon="line-md:cross" class="text-red-500" />
+    <Icon icon="line-md:cross" class="text-danger" />
   {:else if status === "pending"}
-    <Icon icon="line-md:loading-loop" class="animate-spin text-blue-500" />
+    <Icon icon="line-md:loading-loop" class="animate-spin text-info" />
   {:else}
     <Icon {icon} />
   {/if}

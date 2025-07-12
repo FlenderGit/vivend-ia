@@ -25,7 +25,7 @@
   </p>
   <div class="flex justify-end gap-2 mt-4">
     <button
-      class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+      class="px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger"
       onclick={() => {
         is_deleting = true;
         deleteConversation(preview.id)

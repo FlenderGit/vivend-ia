@@ -41,7 +41,7 @@
 </script>
 
 <section
-  class="flex flex-col {classData} pt-6"
+  class="flex flex-col {classData} pt-8"
   bind:this={viewport}
   {...rest}
   aria-live="polite"
@@ -66,7 +66,7 @@
     class="animate-pulse min-h-20 rounded-lg flex-shrink-0 text-sm px-3 pb-3 mt-3 text-text-light mb-8 transition-colors duration-500"
     class:hidden={discussion.status !== "pending" &&
       discussion.status !== "writing"}
-    class:bg-neutral-200={discussion.status === "pending"}
+    class:bg-background-secondary={discussion.status === "pending"}
     class:my-2={discussion.status === "pending"}
   >
     {#each discussion.bufferMessage as msg}

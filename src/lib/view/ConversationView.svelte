@@ -83,7 +83,7 @@
     onclick={() => (open = !open)}
   />
   <ClickableIcon
-    title="Nouvele conversation"
+    title="Nouvelle conversation"
     icon="mingcute:edit-line"
     onclick={() => {
       current_conversation_store.loadDefaultConversation();
@@ -93,7 +93,7 @@
 
 <!-- <ThemeForm /> -->
 
-<div class="flex h-screen bg-neutral-200">
+<div class="flex h-screen bg-background-secondary">
   <Sidebar
     aria-label="Liste des précédentes conversations"
     aria-keyshortcuts="Ctrl+E"
@@ -116,7 +116,7 @@
           class="animate-spin m-auto text-4xl opacity-75"
         />
       {:else if $error}
-        <p class="text-red-500 opacity-75 m-auto">Erreur: {$error.message}</p>
+        <p class="text-danger opacity-75 m-auto">Erreur: {$error.message}</p>
       {:else if $conversation}
         <MessageAreaView
           discussion={$conversation}
