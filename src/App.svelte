@@ -1,10 +1,8 @@
 <script lang="ts">
-  import type { User } from "./lib/types";
   import Toast from "./lib/components/ui/Toast.svelte";
   import LoginView from "./lib/view/LoginView.svelte";
   import ConversationView from "./lib/view/ConversationView.svelte";
   import { onMount } from "svelte";
-  import { theme_store } from "./lib/stores/theme";
   import { toasts_store } from "./lib/stores/toasts";
   import { user_store } from "$lib/stores/user";
 
@@ -24,14 +22,18 @@
     }
   });
 
-  $effect(() => {
-    console.log("Theme store updated:", $theme_store);
-    Object.entries($theme_store).forEach(([key, value]) => {
-      console.log(`Setting CSS variable --color-${key} to ${value}`);
-      document.documentElement.style.setProperty(`--color-${key}`, value);
-    });
-  });
+  // $effect(() => {
+  //   console.log("Theme store updated:", $theme_store);
+  //   Object.entries($theme_store).forEach(([key, value]) => {
+  //     console.log(`Setting CSS variable --color-${key} to ${value}`);
+  //     document.documentElement.style.setProperty(`--color-${key}`, value);
+  //   });
+  // });
 </script>
+
+<svelte:head>
+  <title>{ __APP_NAME__ }</title>
+</svelte:head>
 
 <!-- <button onclick={() => {
   sendMessageToConversation("1", "Hello, world!");

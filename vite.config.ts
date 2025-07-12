@@ -41,6 +41,7 @@ export default defineConfig({
   },
   // base: "",
   define: {
+    __APP_NAME__: JSON.stringify(manifest.name),
     __VERSION__: JSON.stringify(manifest.version),
   },
   esbuild: {
