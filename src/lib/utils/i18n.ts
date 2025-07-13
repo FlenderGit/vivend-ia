@@ -1,24 +1,40 @@
-/*if import.meta.env.DEV is true, we will use a local messages file for development purposes.
+/**
+ * if import.meta.env.DEV is true, we will use a local messages file for development purposes.
  * In production, we will use the Chrome i18n API to fetch messages.
  */
+export function t(key: string) {
+  console.log("i18n called with key:", key);
+  if (import.meta.env.DEV) {
+    const fullLanguage = navigator.language || navigator.userLanguage;
+    const shortLanguage = fullLanguage.split("-")[0];
 
+    type Messages = Record<string, Record<string, { message: string }>>;
+    const messageFiles: Messages = import.meta.glob(
+      "../../../_locales/*/messages.json",
+      {
+        eager: true,
+        import: "default",
+      }
+    );
 
-export function i18n(key: string) {
-    console.log("i18n called with key:", key);
-    if (import.meta.env.DEV) {
-        const PATH = "../../../_locales/fr/messages.json";
-        type Messages = Record<string, Record<string, { message: string }>>;
-        const messages: Messages = import.meta.glob("../../../_locales/fr/messages.json", {
-            eager: true,
-            import: "default",
-        });
-        console.log("Messages found:", messages,messages[PATH]);
-        if (!messages || !messages[PATH]) {
-            console.error("Messages not found for key:", key);
-            return key;
-        }
-        const message = messages[PATH][key];
-        return message?.message || key;
+    // Essayer plusieurs chemins dans l'ordre de préférence
+    const possiblePaths = [
+      `../../../_locales/${fullLanguage}/messages.json`, // fr-FR
+      `../../../_locales/${shortLanguage}/messages.json`, // fr
+      `../../../_locales/en/messages.json`, // fallback
+    ];
+
+    const messages = possiblePaths
+      .map((path) => messageFiles[path])
+      .find((msg) => msg !== undefined);
+
+    if (!messages) {
+      console.error("No messages found for language:", fullLanguage);
+      return key;
     }
-    return chrome.i18n.getMessage(key) || key;
+
+    const message = messages[key];
+    return message?.message || key;
+  }
+  return chrome.i18n.getMessage(key) || key;
 }

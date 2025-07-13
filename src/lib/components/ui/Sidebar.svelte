@@ -3,7 +3,6 @@
   import type { HTMLAsideAttributes } from "../../types";
   import ClickableIcon from "./ClickableIcon.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
-  import { fetchConversationsPreview } from "../../api";
   import { current_conversation_store } from "../../stores/current_conversation";
   import ConversationPreview from "../conversation/ConversationPreview.svelte";
   import { onMount } from "svelte";
@@ -12,7 +11,7 @@
   import { user_store } from "$lib/stores/user";
   import Icon from "@iconify/svelte";
   import SearchModal from "../modal/SearchModal.svelte";
-  import { i18n } from "$lib/utils/i18n";
+  import { t } from "$lib/utils/i18n";
 
   type Props = {
     open?: boolean;
@@ -81,7 +80,7 @@
       current_conversation_store.loadDefaultConversation();
     }}>
       <Icon icon="mingcute:edit-line" class="size-5" />
-      {i18n("new_conversation")}
+      {t("new_conversation")}
     </button>
     <button class="button hover:bg-neutral-300" onclick={() => {
       is_searching = true
