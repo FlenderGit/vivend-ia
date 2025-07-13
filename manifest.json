@@ -3,7 +3,15 @@
   "name": "Vivend'ia",
   "version": "1.0",
 
-  "description": "Extension de navigation pour Vivend'ia",
+  "default_locale": "fr",
+  "description": "__MSG_extension_description__",
+
+  "developer": {
+    "name": "Tristan",
+    "url": "https://github.com/FlenderGit"
+  },
+
+  "homepage_url": "https://github.com/FlenderGit/vivend-ia",
 
   "permissions": ["sidePanel", "identity", "storage", "activeTab"],
   "icons": {

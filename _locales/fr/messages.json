@@ -1,0 +1,10 @@
+{
+    "extension_description": {
+        "message": "Extension de navigation pour Vivend'ia",
+        "description": "Description du projet Vivend'ia"
+    },
+    "new_conversation": {
+        "message": "Nouvelle conversation",
+        "description": "Titre du bouton pour démarrer une nouvelle conversation"
+    }
+}
