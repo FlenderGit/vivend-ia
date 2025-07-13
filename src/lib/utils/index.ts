@@ -12,6 +12,7 @@ export function wait(ms: number): Promise<void> {
 
 export function getWebsiteUrl(): Promise<string> {
     return new Promise((resolve) => {
+        if (import.meta.env.DEV) return resolve('http://localhost:5173');
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             if (tabs[0]) {
                 resolve(tabs[0].url || '');

@@ -1,5 +1,6 @@
-import { createConversation } from "$lib/api";
+import { createConversation, sendMessageToConversation } from "$lib/api";
 import { history_conversation_store } from "$lib/stores/conversation_history";
+import { wait } from "$lib/utils";
 import type { ConversationData } from "../types";
 
 type Status = "pending" | "writing" | "resolved" | "rejected";
@@ -10,19 +11,21 @@ export class Conversation {
     return new Conversation({
       id: "",
       title: "",
-      icon: "",
+      // icon: "",
       messages: [],
-      timestamp: new Date().getUTCHours(),
+      updated_at: Date.now(),
+      // timestamp: new Date().getUTCHours(),
     });
   }
 
   private _data: ConversationData = $state({
     id: "",
     title: "",
-    icon: "",
+    // icon: "",
     messages: [],
     description: "",
-    timestamp: new Date().getUTCHours(),
+    updated_at: Date.now(),
+    // timestamp: new Date().getUTCHours(),
   });
 
   public bufferMessage: Array<string> = $state([]);
@@ -49,9 +52,9 @@ export class Conversation {
     return this._data.messages;
   }
 
-  get icon(): string {
-    return this._data.icon;
-  }
+  // get icon(): string {
+  //   return this._data.icon;
+  // }
 
   get messageCount(): number {
     return this._data.messages.length;
@@ -62,54 +65,61 @@ export class Conversation {
   }
 
   get currentMessage(): string {
-    return this.bufferMessage.join(" ");
+    return this.bufferMessage.join("");
   }
 
   async sendMessageToAi(message: string): Promise<void> {
     this._status = "pending";
 
-    // If default one
-    if (this._data.id === "") {
-      await createConversation({
-        messages: [{
-          role: "user",
-          message,
-        }]
-      }).match(
-        (data) => {
-          this._data = data;
-          history_conversation_store.addConversation(data);
-        },
-        (error) => {
-          throw new Error(`Failed to create conversation: ${error.message}`);
-        }
-      );
+    const getStream = async () => {
+      const conversationId = this._data.id;
+      if (conversationId === "") {
+        this._data.messages = [
+          {
+            id: crypto.randomUUID(),
+            role: "user",
+            content: [{ text: message, type: "input_text" }]
+          }
+        ];
+        return createConversation("Default Conversation", message)
+          .map(({ preview, messages }) => {
+            const conversation: ConversationData = {
+              ...this._data,
+              ...preview
+            };
+            console.log("Creating new conversation:", conversation, messages);
+            this._data = conversation;
+            history_conversation_store.addConversation(conversation);
+            return messages;
+          });
+      } else {
+        this.addMessage(crypto.randomUUID(), message, "user");
+        return sendMessageToConversation(conversationId, message);
+      }
     }
 
-    this.addMessage(message, "user");
-    // Simulate an AI response with a delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    
-    // Simulate AI Response SSE writing in currentMessage
-    const aiResponse = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-    const slices = aiResponse.split(" ");
-    
+    const message_stream = await getStream();
+    if (message_stream.isErr()) {
+      throw new Error(`Failed to send message: ${message_stream.error.message}`);
+    }
 
     this._status = "writing";
-    for (const element of slices) {
-      this.bufferMessage.push(element);
-      await new Promise(resolve => setTimeout(resolve, 100));
+    for await (const event of message_stream.value) {
+      this.bufferMessage.push(event.data);
+      await wait(50);
     }
 
     await new Promise(resolve => setTimeout(resolve, 400));
-    this.addMessage(this.currentMessage, "assistant");
+    this.addMessage(
+      crypto.randomUUID(),
+      this.currentMessage, "assistant");
     this.bufferMessage = [];
 
     this._status = "resolved";
   }
 
-  private addMessage(message: string, role: "user" | "assistant"): void {
-    this._data.messages.push({ message, role });
+  private addMessage(id: string, message: string, role: "user" | "assistant"): void {
+    this._data.messages.push({ id, content: [{ text: message, type: "input_text" }], role });
   }
 
 }

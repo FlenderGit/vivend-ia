@@ -1,12 +1,18 @@
 export type ConversationPreviewData = {
     id: string;
     title: string;
-    icon: string;
-    timestamp: number;
+    // icon: string;
+    updated_at: number;
+}
+
+type TextMessage = {
+    type: 'input_text',
+    text: string
 }
 
 export type MessageData = {
-    message: string;
+    id: string;
+    content: Array<TextMessage>;
     role: 'user' | 'assistant';
 }
 

@@ -19,7 +19,7 @@
 
   let { open = $bindable(false), ...rest }: Props = $props();
   //
-  const { conversation, isLoading } = current_conversation_store;
+  const { conversation, isLoading, error } = current_conversation_store;
   const selected_id = $derived($conversation?.id || null);
 
   let loading_id = $state<string | null>(null);
@@ -94,9 +94,9 @@
     <nav>
       {#if $isConversationsLoading}
         <p>Loading...</p>
-      {:else if false}
+      {:else if $error}
         <div class="error">
-          <p>Erreur: TD</p>
+          <p>{$error.message}</p>
         </div>
       {:else if $conversations}
         <ul class="flex flex-col gap-2" role="list">

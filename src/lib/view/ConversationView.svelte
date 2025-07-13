@@ -48,11 +48,10 @@
   }
 
   onMount(() => {
-    current_conversation_store.loadNewConversation("2");
+    current_conversation_store.loadNewConversation("C6D447A596F241778FA5BE03DC2EE7F8");
 
     // Get the page name
     chrome.tabs?.query({ active: true, currentWindow: true }, (tabs) => {
-      console.log("Current tab:", tabs);
       if (tabs[0]) {
         console.log("Titre:", tabs[0].title);
         console.log("URL:", tabs[0].url);

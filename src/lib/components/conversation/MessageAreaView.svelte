@@ -58,7 +58,7 @@
     <hr class="w-full text-neutral-300" />
   </div>
 
-  {#each discussion.messages as message}
+  {#each discussion.messages as message (message.id)}
     <MessageView {message} />
   {/each}
 
@@ -70,7 +70,7 @@
     class:my-2={discussion.status === "pending"}
   >
     {#each discussion.bufferMessage as msg}
-      <span class="animate-typing">{msg + " "}</span>
+      <span class="animate-typing">{msg}</span>
     {/each}
   </div>
 </section>

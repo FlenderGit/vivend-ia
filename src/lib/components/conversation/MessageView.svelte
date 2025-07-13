@@ -14,7 +14,9 @@
 
 <article class="flex {isUserMessage ? 'justify-end' : 'justify-start'}">
   <div class="p-3 {messageClass}">
-    <p class="text-sm whitespace-pre-wrap">{message.message}</p>
+    {#each message.content as content}
+      <p class="text-sm whitespace-pre-wrap">{content.text}</p>
+    {/each}
     {#if !isUserMessage}
       <footer class="mt-2 flex gap-2">
         <ClickableIcon
