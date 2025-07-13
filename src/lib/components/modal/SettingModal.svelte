@@ -2,7 +2,6 @@
   import Icon from "@iconify/svelte";
   import ThemeForm from "../form/ThemeForm.svelte";
   import Modal from "../ui/Modal.svelte";
-  import Input from "../Input.svelte";
 
   type Props = {
     open?: boolean;
@@ -30,12 +29,7 @@
 
   type Tabs = typeof TABS[number]["id"];
 
-  const ABOUT_DATA = {
-    lastUpdate: "2023-10-01",
-  };
-
   let font_size = $state(16);
-
   let tab_selected: Tabs = $state("general");
 </script>
 

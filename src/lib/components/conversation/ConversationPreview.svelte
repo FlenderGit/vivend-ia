@@ -57,9 +57,11 @@
 </script>
 
 <button
-  class="box-border group w-full rounded-xl hover:bg-background-tertiary px-3 py-2 flex items-center justify-between gap-1 cursor-pointer transition-colors"
+  class={[
+    is_selected && "bg-neutral-500/15",
+    "box-border group w-full rounded-xl hover:bg-neutral-500/15 px-3 py-2 flex items-center justify-between gap-1 cursor-pointer transition-colors"
+  ]}
   title={preview.title}
-  class:bg-background-tertiary={is_selected}
   role="tab"
   aria-selected={is_selected}
   tabindex="0"
@@ -72,7 +74,7 @@
   <div use:usePopperElement>
     <ClickableIcon
       icon="mingcute:more-1-fill"
-      title="Details"
+      title="Détails"
       class="{!is_selected && "hidden"} group-hover:block"
       onclick={(e) => {
         e.stopPropagation();

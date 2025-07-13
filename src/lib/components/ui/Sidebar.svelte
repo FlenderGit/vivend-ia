@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import type { HTMLAsideAttributes, User } from "../../types";
+  import type { HTMLAsideAttributes } from "../../types";
   import ClickableIcon from "./ClickableIcon.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
   import { fetchConversationsPreview } from "../../api";
@@ -11,6 +11,8 @@
   import SettingModal from "../modal/SettingModal.svelte";
   import { user_store } from "$lib/stores/user";
   import Icon from "@iconify/svelte";
+  import SearchModal from "../modal/SearchModal.svelte";
+  import { i18n } from "$lib/utils/i18n";
 
   type Props = {
     open?: boolean;
@@ -29,14 +31,7 @@
 
   // const conversationRequest = useApi(fetchConversationsPreview);
   onMount(() => {
-    fetchConversationsPreview().match(
-      (data) => {
-        history_conversation_store.setConversations(data);
-      },
-      (error) => {
-        console.error("Failed to fetch conversations:", error);
-      }
-    );
+    history_conversation_store.fetchConversations();
   });
 
   function loadNewConversationLinked(id: string) {
@@ -62,6 +57,7 @@
   }
 
   let is_editing = $state(false);
+  let is_searching = $state(false);
 </script>
 
 <svelte:window
@@ -74,18 +70,22 @@
 />
 
 <aside
-  class="absolute z-40 sm:z-20 sm:w-64 pt-12 p-4 inset-0 duration-500 transition-[opacity,transform,translate] flex flex-col gap-4 justify-between"
+  class="absolute z-40 bg-background-secondary sm:z-20 sm:w-64 pt-12 p-4 inset-0 duration-500 transition-[opacity,transform,translate] flex flex-col gap-4 justify-between"
   class:translate-x-[-100%]={!open}
   class:translate-x-0={open}
   class:opacity-0={!open}
   {...rest}
 >
   <div class="font-semibold text-sm">
-    <button class="button hover:bg-neutral-300" disabled>
+    <button class="button hover:bg-neutral-300" onclick={() => {
+      current_conversation_store.loadDefaultConversation();
+    }}>
       <Icon icon="mingcute:edit-line" class="size-5" />
-      Nouvelle conversation
+      {i18n("new_conversation")}
     </button>
-    <button class="button hover:bg-neutral-300" disabled>
+    <button class="button hover:bg-neutral-300" onclick={() => {
+      is_searching = true
+    }}>
       <Icon icon="mingcute:search-2-line" class="size-5" />
       Rechercher
     </button>
@@ -174,3 +174,4 @@
 </aside>
 
 <SettingModal bind:open={is_editing} />
+<SearchModal bind:open={is_searching} />

@@ -5,6 +5,7 @@ import { writable } from "svelte/store";
 function createHistoryConversationStore() {
     const store = writable<Array<ConversationPreviewData>>([]);
     let isLoading = writable(false);
+    let error = writable<string | null>(null);
 
     return {
         get conversations() {
@@ -13,12 +14,19 @@ function createHistoryConversationStore() {
         get isLoading() {
             return isLoading;
         },
+        get error() {
+            return error;
+        },
         fetchConversations: async () => {
             isLoading.set(true);
-            fetchConversationsPreview()
-        },
-        setConversations: (conversations: Array<ConversationPreviewData>) => {
-            store.set(conversations);
+            fetchConversationsPreview().match(
+                store.set,
+                (err) => {
+                    error.set(err.message);
+                }
+            ).finally(() => {
+                isLoading.set(false);
+            });
         },
         addConversation: (conversation: ConversationPreviewData) => {
             store.update((conversations) => {
