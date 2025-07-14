@@ -102,7 +102,7 @@
     <div transition:slide={{ axis: "x", duration: 400 }} class="sm:w-64"></div>
   {/if}
   <div
-    class="flex-1 flex flex-col transition-all duration-500 {open && 'sm:p-3'}"
+    class="flex-1 flex flex-col transition-all duration-500 {open && 'sm:py-3 sm:pr-3'}"
   >
     <main
       id="main-content"

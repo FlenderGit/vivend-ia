@@ -49,7 +49,7 @@
       class="input"
     />
   </label>
-  <label class="label">
+  <!-- <label class="label">
     Icon
     <Input
       type="text"
@@ -58,7 +58,7 @@
       placeholder="Enter conversation icon"
       class="input"
     />
-  </label>
+  </label> -->
 
   <button type="submit" class=""> Save </button>
 </form>

@@ -69,77 +69,80 @@
 />
 
 <aside
-  class="absolute z-40 bg-background-secondary sm:z-20 sm:w-64 pt-12 p-4 inset-0 duration-500 transition-[opacity,transform,translate] flex flex-col gap-4 justify-between"
+  class="absolute z-40 top-0 bottom-0 bg-background-secondary sm:z-20 sm:w-64 pt-12 px-4 pb-4 duration-500 transition-[opacity,transform,translate] grid grid-rows-[auto_1fr_auto] gap-4"
   class:translate-x-[-100%]={!open}
   class:translate-x-0={open}
   class:opacity-0={!open}
   {...rest}
 >
   <div class="font-semibold text-sm">
-    <button class="button hover:bg-neutral-300" onclick={() => {
-      current_conversation_store.loadDefaultConversation();
-    }}>
+    <button
+      class="button hover:bg-neutral-300"
+      onclick={() => {
+        current_conversation_store.loadDefaultConversation();
+      }}
+    >
       <Icon icon="mingcute:edit-line" class="size-5" />
       {t("new_conversation")}
     </button>
-    <button class="button hover:bg-neutral-300" onclick={() => {
-      is_searching = true
-    }}>
+    <button
+      class="button hover:bg-neutral-300"
+      onclick={() => {
+        is_searching = true;
+      }}
+    >
       <Icon icon="mingcute:search-2-line" class="size-5" />
       Rechercher
     </button>
-
-    <h2 class="my-4 text-sm opacity-50">Conversations</h2>
-
-    <nav>
-      {#if $isConversationsLoading}
-        <p>Loading...</p>
-      {:else if $error}
-        <div class="error">
-          <p>{$error.message}</p>
-        </div>
-      {:else if $conversations}
-        <ul class="flex flex-col gap-2" role="list">
-          {#each $conversations as discussion, i (discussion.id)}
-            <li
-              transition:fade={{ duration: 300 }}
-              class:animate-pulse={$isLoading && loading_id === discussion.id}
-            >
-              <ConversationPreview
-                bind:preview={$conversations[i]}
-                is_selected={selected_id === discussion.id}
-                is_dropdown_down={selected_dropdown_id === discussion.id}
-                ondropdown_clicked={() => {
-                  selected_dropdown_id =
-                    selected_dropdown_id === discussion.id
-                      ? null
-                      : discussion.id;
-                }}
-                ondelete={() => {
-                  if (discussion.id === discussion.id) {
-                    const new_id = $conversations[i + 1]?.id || "exemple";
-                    loadNewConversationLinked(new_id);
-                  }
-
-                  history_conversation_store.removeConversation(discussion.id);
-                }}
-                onclick={() => {
-                  if (selected_id === discussion.id) return;
-                  loadNewConversationLinked(discussion.id);
-                }}
-              />
-            </li>
-          {:else}
-            <li class="text-neutral-500">No conversations found.</li>
-          {/each}
-        </ul>
-      {:else}
-        <div class="error">
-          <p>Erreur inattendue</p>
-        </div>
-      {/if}
-    </nav>
   </div>
+
+  <nav class="w-full overflow-y-auto text-sm">
+    <h2 class="my-4 text-sm opacity-50">Conversations</h2>
+    {#if $isConversationsLoading}
+      <p>Loading...</p>
+    {:else if $error}
+      <div class="error">
+        <p>{$error.message}</p>
+      </div>
+    {:else if $conversations}
+      <ul class="flex flex-col gap-2" role="list">
+        {#each $conversations as discussion, i (discussion.id)}
+          <li
+            transition:fade={{ duration: 300 }}
+            class:animate-pulse={$isLoading && loading_id === discussion.id}
+          >
+            <ConversationPreview
+              bind:preview={$conversations[i]}
+              is_selected={selected_id === discussion.id}
+              is_dropdown_down={selected_dropdown_id === discussion.id}
+              ondropdown_clicked={() => {
+                selected_dropdown_id =
+                  selected_dropdown_id === discussion.id ? null : discussion.id;
+              }}
+              ondelete={() => {
+                if (discussion.id === discussion.id) {
+                  const new_id = $conversations[i + 1]?.id || "exemple";
+                  loadNewConversationLinked(new_id);
+                }
+
+                history_conversation_store.removeConversation(discussion.id);
+              }}
+              onclick={() => {
+                if (selected_id === discussion.id) return;
+                loadNewConversationLinked(discussion.id);
+              }}
+            />
+          </li>
+        {:else}
+          <li class="text-neutral-500">No conversations found.</li>
+        {/each}
+      </ul>
+    {:else}
+      <div class="error">
+        <p>Erreur inattendue</p>
+      </div>
+    {/if}
+  </nav>
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
       {#if $user_store === null}
