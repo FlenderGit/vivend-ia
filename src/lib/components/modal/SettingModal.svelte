@@ -72,7 +72,7 @@
       {:else if tab_selected === "privacy"}
         <p>Privacy settings</p>
         <hr class="text-neutral-300" />
-        <button>
+        <button class="button bg-danger text-white justify-center hover:opacity-90">
             Supprimer toutes les données
         </button>
         <i>Cette action est irréversible et supprimera toutes vos données.</i>

@@ -128,7 +128,7 @@
               disabled={$conversation.status === "pending" ||
                 $conversation.status === "writing"}
               type="text"
-              placeholder="Type your message here..."
+              placeholder="Envoyer un message..."
               class="input lshadow"
               autocomplete="off"
               autocorrect="off"

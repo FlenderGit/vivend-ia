@@ -167,7 +167,6 @@ export function sendMessageToConversation(
           ...{
             "X-Tab-Name": tabName,
           },
-          "X-Requested-With": REQUEST_WITH,
         },
         json: {
           prompt: message,
