@@ -1,8 +1,9 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
   import type { User } from "../types";
-  import { authenticateUser } from "../utils/auth";
-  import { wait } from "../utils";
+  import { authenticateUser, getUserData } from "../utils/auth";
+  import { ResultAsync } from "neverthrow";
+  import { auth_store } from "$lib/stores/auth";
 
   let status: "neutral" | "pending" | "success" | "error" = $state("neutral");
 
@@ -39,17 +40,28 @@
     class:opacity-75={status === "pending"}
     onclick={async () => {
       status = "pending";
-      const result = await authenticateUser();
-      if (result.isOk()) {
-        status = "success";
-        chrome.storage.local.set({ user: result.value });
-        await wait(1000);
-        user = result.value;
-      } else {
-        console.error("Authentication failed:", result.error);
-        status = "error";
-        error = result.error.message;
-      }
+      authenticateUser()
+        .map(response => {
+          $auth_store = response;
+          return response;
+        })
+        .andThen((response) => {
+          return ResultAsync.fromPromise(
+            chrome.storage.local.set({ auth: response }),
+            (error) => new Error(`Failed to store auth: ${error}`)
+          ).map(() => response);
+        })
+        .andThen((response) => getUserData(response.accessToken))
+        .match(
+          (data) => {
+            status = "success";
+            user = data;
+          },
+          (err) => {
+            status = "error";
+            error = err.message;
+          }
+        );
     }}
   >
     <div class:animate-spin={status === "pending"}>
