@@ -39,7 +39,7 @@
   function getClassColor(toast: ToastData) {
     switch (toast.type) {
       case "success":
-        return "bg-success text-success";
+        return "text-success";
       case "error":
         return "bg-danger text-danger";
       case "info":

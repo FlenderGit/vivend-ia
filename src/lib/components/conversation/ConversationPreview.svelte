@@ -41,6 +41,10 @@
     {
       label: "Pin",
       icon: "mdi:pin-outline",
+      onclick: () => {
+        console.log("Pinned conversation:", preview.title);
+        print();
+      },
     },
     {
       label: "Share",
@@ -49,9 +53,7 @@
     {
       label: "Delete",
       icon: "mdi:delete-outline",
-      onclick: () => {
-        is_deleting = true;
-      },
+      onclick: () => { is_deleting = true; },
     },
   ];
 </script>
@@ -59,7 +61,7 @@
 <button
   class={[
     is_selected && "bg-neutral-500/15",
-    "box-border group w-full rounded-xl hover:bg-neutral-500/15 px-3 py-2 flex items-center justify-between gap-1 cursor-pointer transition-colors"
+    "box-border group w-full rounded-xl hover:bg-neutral-500/15 px-3 py-1 flex items-center justify-between gap-1 cursor-pointer transition-colors"
   ]}
   title={preview.title}
   role="tab"
@@ -75,7 +77,7 @@
     <ClickableIcon
       icon="mingcute:more-1-fill"
       title="Détails"
-      class="{!is_selected && "hidden"} group-hover:block"
+      class="flex {!is_selected && "opacity-0 group-hover:opacity-100"}"
       onclick={(e) => {
         e.stopPropagation();
         ondropdown_clicked?.();
@@ -136,8 +138,6 @@
   <ModalDeleteConversation
     bind:open={is_deleting}
     {preview}
-    onDelete={() => {
-      ondelete();
-    }}
+    onDelete={() => { ondelete(); }}
   />
 {/if}

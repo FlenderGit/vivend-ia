@@ -2,7 +2,8 @@ import { writable } from "svelte/store";
 import type { Toast, ToastData } from "../types";
 
 function createToastStore() {
-  const { subscribe, update } = writable<Toast[]>([]);
+  const { subscribe, update } = writable<Toast[]>([
+  ]);
 
   function addToast(toast: ToastData) {
     const id = crypto.randomUUID();

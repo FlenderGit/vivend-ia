@@ -1,17 +1,10 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
-  import type { User } from "../types";
-  import { authenticateUser, getUserData } from "../utils/auth";
-  import { ResultAsync } from "neverthrow";
-  import { auth_store } from "$lib/stores/auth";
+  import { authenticator } from "../utils/auth";
+  import { user_store } from "$lib/stores/user";
+    import { t } from "$lib/utils/i18n";
 
   let status: "neutral" | "pending" | "success" | "error" = $state("neutral");
-
-  type Props = {
-    user?: User | null;
-  };
-
-  let { user = $bindable(null) }: Props = $props();
 
   let error: string | null = $state(null);
 
@@ -29,36 +22,29 @@
   }
 </script>
 
-<header class="bg-primary text-white p-4 shadow-md mb-8">
-  <h1 class="text-xl font-semibold">Vivend'ia</h1>
-</header>
+<!-- In web mode, the UI have already a header -->
+{#if import.meta.env.MODE === "extension"}
+  <header class="bg-primary text-white p-4 shadow-md">
+    <h1 class="text-xl font-semibold">{__APP_NAME__}</h1>
+  </header>
+{/if}
 
-<main class="flex flex-col gap-4 items-center">
+<main class="flex flex-col gap-4 items-center mt-8">
   <button
     class="bg-primary text-white px-4 py-2 rounded transition-colors hover:bg-primary-dark flex items-center font-semibold gap-2"
     class:cursor-not-allowed={status === "pending"}
     class:opacity-75={status === "pending"}
     onclick={async () => {
       status = "pending";
-      authenticateUser()
-        .map(response => {
-          $auth_store = response;
-          return response;
-        })
-        .andThen((response) => {
-          return ResultAsync.fromPromise(
-            chrome.storage.local.set({ auth: response }),
-            (error) => new Error(`Failed to store auth: ${error}`)
-          ).map(() => response);
-        })
-        .andThen((response) => getUserData(response.accessToken))
+      authenticator.authenticate(true)
         .match(
           (data) => {
             status = "success";
-            user = data;
+            $user_store = data;
           },
           (err) => {
             status = "error";
+            console.error(err.message);
             error = err.message;
           }
         );
@@ -67,9 +53,11 @@
     <div class:animate-spin={status === "pending"}>
       <Icon icon={getIcon()} class="size-4" />
     </div>
-    Login with Microsoft
+    {t("helping_connect_with_microsoft")}
   </button>
-  <small>Please authenticate yourself to access your account.</small>
+  <small>
+    {t("helping_connect_to_access")}
+  </small>
 
   <small class="text-danger text-center" hidden={!error}>
     {error}

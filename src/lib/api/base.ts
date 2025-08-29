@@ -1,7 +1,7 @@
 import ky, { HTTPError } from "ky";
 import { fromPromise, type ResultAsync } from "neverthrow";
 import { get } from "svelte/store";
-import { auth_store } from "$lib/stores/auth";
+import { authenticator } from "$lib/utils/auth";
 
 class NetworkError extends Error {
   constructor(
@@ -35,18 +35,17 @@ export const api = ky.create({
     "Content-Type": "application/json",
     "X-Requested-With": "Vivendia",
   },
-  timeout: 10000,
+  timeout: false,
   retry: {
-    limit: 3,
+    limit: 1,
     methods: ["get", "post", "put", "delete"],
     statusCodes: [408, 500, 502, 503, 504],
   },
   hooks: {
     beforeRequest: [
       req => {
-        const auth = get(auth_store);
-        if (auth && auth.isJwtValid()) {
-          req.headers.set("Authorization", `Bearer ${auth.accessToken}`);
+        if (authenticator.isJwtValid()) {
+          req.headers.set("Authorization", `Bearer ${authenticator.access_token}`);
         }
       }
     ]
@@ -88,15 +87,6 @@ const mapHttpError = (error: unknown) => {
 };
 
 function handleError(error: unknown): Error {
-  // if (!(error instanceof Error)) {
-  //   error = new Error("An unknown error occurred");
-  // }
-  // console.error("API Error:", error);
-  // toasts_store.addToast({
-  //   type: "error",
-  //   message: (error as Error).message,
-  //   duration: 5000,
-  // });
   return mapHttpError(error);
 }
 

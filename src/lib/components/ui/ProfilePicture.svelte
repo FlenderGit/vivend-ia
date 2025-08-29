@@ -21,7 +21,7 @@
     <p>NoHandled</p>
 {:else}
     <div
-        class="{BASE_CSS} flex items-center justify-center bg-primary text-white rounded-full"
+        class="{BASE_CSS} flex items-center justify-center bg-primary text-white rounded-full shrink-0"
         title={user.name}
     >
         <span class="font-semibold text-lg">{extractInitials(user.name)}</span>

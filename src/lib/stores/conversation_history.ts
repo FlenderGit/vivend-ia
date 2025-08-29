@@ -30,7 +30,7 @@ function createHistoryConversationStore() {
         },
         addConversation: (conversation: ConversationPreviewData) => {
             store.update((conversations) => {
-                return [...conversations, conversation];
+                return [conversation, ...conversations];
             });
         },
         removeConversation: (id: string) => {

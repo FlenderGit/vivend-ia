@@ -1,14 +1,23 @@
 <script lang="ts">
   import { tick } from "svelte";
-  import MessageView from "./MessageView.svelte";
   import type { Conversation } from "../../classes";
   import type { HTMLSectionAttributes } from "../../types";
+  import { marked } from "marked";
+  import { current_tab_store } from "$lib/stores/current_tab";
+  import { fetch_suggestions } from "$lib/api/suggestion";
+  import { blur } from "svelte/transition";
+    import EmptyConversation from "./EmptyConversation.svelte";
+    import type { AssistantMessage, MessageByRole, ResponseItem, ResponseItemReasoning } from "$lib/types/openai";
+    import { is_assistant_message, is_user_message } from "$lib/utils/openai";
+    import UserMessageView from "./message/UserMessageView.svelte";
+    import AssistantMessageView from "./message/AssistantMessageView.svelte";
 
   type Props = {
+    input_ref: HTMLInputElement;
     discussion: Conversation;
   } & HTMLSectionAttributes;
 
-  const { discussion, class: classData, ...rest }: Props = $props();
+  let { input_ref = $bindable(), discussion, class: classData, ...rest }: Props = $props();
 
   let viewport: HTMLSectionAttributes;
 
@@ -38,17 +47,62 @@
       });
     }
   });
+
+    function splitMessageByRole(messages: ResponseItem[]): MessageByRole[] {
+
+      let result: MessageByRole[] = [];
+      let reasoningBuffer: ResponseItemReasoning[] = [];
+
+      const flushReasoningBuffer = (assistant_msg?: AssistantMessage): void => {
+        if (reasoningBuffer.length > 0 || assistant_msg) {
+          result.push({ 
+            role: "assistant", 
+            message: assistant_msg,
+            reasoning: [...reasoningBuffer],
+          });
+          reasoningBuffer = [];
+        }
+      };
+
+      for (const message of messages) {
+        // If the message is from user, push the buffer as assistant and clear it
+        if (is_user_message(message)) {
+          flushReasoningBuffer(); 
+          result.push({ role: "user", message});
+        // If it's a message from assistant, push the buffer
+        } else if (is_assistant_message(message)) {
+          flushReasoningBuffer(message);
+        // Else (it reasoning, function_call, etc.), add to buffer
+        } else {
+          reasoningBuffer.push(message);
+        }
+      }
+      
+      flushReasoningBuffer();
+      console.log("Messages split by role:", result);
+      return result;
+    }
+
+    const messages_splited = $derived(splitMessageByRole(discussion.messages.data));
+    // const suggestions = $derived(await fetch_suggestions($current_tab_store));
+    
+    let suggestions: string[] = $state([]);
+    $effect(async () => {
+      const result = await fetch_suggestions($current_tab_store);
+      suggestions = result.suggestions;
+    });
+
 </script>
 
 <section
-  class="flex flex-col {classData} pt-8"
+  class="flex flex-col {classData} pt-8 gap-4 max-w-2xl w-full mx-auto"
   bind:this={viewport}
   {...rest}
   aria-live="polite"
   role="log"
   aria-label="Zone de discussion avec la conversation {discussion.title}"
 >
-  <div class="flex items-center gap-2">
+  <!-- <div class="flex items-center gap-2">
     <time
       class="text-sm text-text font-semibold"
       datetime={new Date().toISOString()}
@@ -56,21 +110,41 @@
       Aujourd'hui
     </time>
     <hr class="w-full text-neutral-300" />
-  </div>
+  </div> -->
 
-  {#each discussion.messages as message (message.id)}
-    <MessageView {message} />
+  <!-- {#each discussion.messages.data as message (message.id)} -->
+  {#each messages_splited as message }
+    {#if message.role === "user"}
+      <UserMessageView {message} />
+    {:else}
+      <AssistantMessageView {message} />
+    {/if}
+  {:else}
+    <EmptyConversation />
+    <div class="grid md:grid-cols-2 gap-2">
+      {#each suggestions as suggestion (suggestion)}
+        <button class="px-4 py-2 bg-neutral-200 hover:bg-neutral-300 rounded-lg transition-colors text-sm truncate {messages_splited.length % 2 === 1 && "md:last:hidden"}" title={suggestion} onclick={() => {
+            input_ref.focus();
+            input_ref.value = suggestion;
+        }} 
+        in:blur
+        >
+          {suggestion}
+        </button>
+      {/each}
+    </div>
   {/each}
 
   <div
-    class="animate-pulse min-h-20 rounded-lg flex-shrink-0 text-sm px-3 pb-3 mt-3 text-text-light mb-8 transition-colors duration-500"
-    class:hidden={discussion.status !== "pending" &&
-      discussion.status !== "writing"}
+    class="animate-pulse min-h-20 rounded-lg flex-shrink-0 text-sm px-3 pb-3 mt-3 text-text-light mb-8 transition-colors duration-500 reset-all"
+    class:hidden={discussion.status !== "pending" && discussion.status !== "writing"}
     class:bg-background-secondary={discussion.status === "pending"}
     class:my-2={discussion.status === "pending"}
   >
-    {#each discussion.bufferMessage as msg}
-      <span class="animate-typing">{msg}</span>
-    {/each}
+    <!-- TODO: Optimize to not rerender each time -->
+    <span class="animate-typing">{@html marked.parse(discussion.bufferMessage.join(""))}</span>
+    <!-- {#each discussion.bufferMessage as msg}
+      <span class="animate-typing reset-all">{@html msg}</span>
+    {/each} -->
   </div>
 </section>

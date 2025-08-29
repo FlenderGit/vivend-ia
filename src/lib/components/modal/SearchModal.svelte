@@ -46,7 +46,7 @@
         {@html highlightText(conversation.title, query)}
       </button>
     {:else}
-      <p class="text-gray-500">No results found</p>
+      <p class="text-text-light">No results found</p>
     {/each}
   </div>
 </Modal>

@@ -28,18 +28,37 @@ function createCurrentConversationStore() {
           // icon: "default-icon",
           // timestamp: Date.now(),
           updated_at: Date.now(),
-          messages: [
-            {
-              id: "default-message",
-              role: "assistant",
-              content: [
-                {
-                  type: "input_text",
-                  text: "Welcome to the default conversation! How can I assist you today?",
-                }
-              ]
-            },
-          ],
+          data: {
+            object: "list",
+            data: [
+              // {
+              //   id: "default-message",
+              //   type: "message",
+              //   status: "completed",
+              //   role: "assistant",
+              //   content: [
+              //     // {
+              //     //   type: "output_text",
+              //     //   text: "Welcome to the default conversation! How can I assist you today?",
+              //     //   annotations: [],
+              //     // }
+              //   ]
+              // }
+              
+            ],
+          }
+          // messages: [
+          //   {
+          //     id: "default-message",
+          //     role: "assistant",
+          //     content: [
+          //       {
+          //         type: "input_text",
+          //         text: "Welcome to the default conversation! How can I assist you today?",
+          //       }
+          //     ]
+          //   },
+          // ],
         })
       );
     },

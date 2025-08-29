@@ -33,21 +33,21 @@
   let tab_selected: Tabs = $state("general");
 </script>
 
-<Modal bind:open class="">
+<Modal bind:open>
   {#snippet header()}
-    <h2 class="text-lg font-semibold">Settings ({tab_selected})</h2>
+    <h2 class="text-lg font-semibold">Settings</h2>
   {/snippet}
 
-  <div class="flex flex-col sm:flex-row">
+  <div class="flex flex-col sm:flex-row h-80">
     <nav class="sm:border-r border-background-tertiary pr-4">
-      <ul class="flex sm:flex-col">
+      <ul class="flex sm:flex-col gap-1 overflow-x-auto">
         {#each TABS as tab}
           <li>
             <button
               onclick={() => (tab_selected = tab.id)}
               class:bg-primary={tab_selected === tab.id}
               class={[
-                "flex items-center gap-2 rounded-lg w-full text-left p-2 transition-all",
+                "flex items-center gap-2 rounded-lg w-full text-left px-2 py-1 transition-all",
                 tab_selected === tab.id ? "text-white bg-primary" : "hover:bg-neutral-500/15"
               ]}
             >
@@ -59,9 +59,10 @@
       </ul>
     </nav>
 
-    <div class="flex-1 p-6 flex flex-col gap-2">
+    <div class="flex-1 p-6 flex flex-col gap-4">
       {#if tab_selected === "general"}
         <p>General settings</p>
+        
       {:else if tab_selected === "appearance"}
         <ThemeForm />
         <label>
@@ -70,29 +71,31 @@
           <span>{font_size}</span>
         </label>
       {:else if tab_selected === "privacy"}
-        <p>Privacy settings</p>
+        <div class="flex-1">
+          <p>Privacy settings</p>
+        </div>
         <hr class="text-neutral-300" />
         <button class="button bg-danger text-white justify-center hover:opacity-90">
             Supprimer toutes les données
         </button>
-        <i>Cette action est irréversible et supprimera toutes vos données.</i>
+        <i class="text-center">Cette action est irréversible et supprimera toutes vos données.</i>
       {:else if tab_selected === "about"}
-        <div class="mx-auto flex flex-col items-center gap-1">
+        <div class="mx-auto flex flex-col flex-1 flex-center gap-1">
           <Icon icon="mingcute:information-line" class="size-12" />
           <p class="font-semibold text-lg">Vivend'ia</p>
           <p class="text-sm opacity-60">
             Version {__VERSION__}
             {#if import.meta.env.DEV}
-              <span>(DEV)</span>
+              <span>(DEV - {import.meta.env.MODE})</span>
             {/if}
           </p>
         </div>
 
         <hr class="text-neutral-300" />
-        <div class="flex flex-col p-2 gap-2">
-          <a href="#">Conditions d'utilisations</a>
-          <a href="#">Politique de confidentialité</a>
-          <a href="#">Signaler un bug</a>
+        <div class="flex flex-col gap-2">
+          <a href="https://example.com/terms-of-service">Conditions d'utilisations</a>
+          <a href="https://example.com/privacy-policy">Politique de confidentialité</a>
+          <a href="https://example.com/report-bug">Signaler un bug</a>
         </div>
       {:else}
         <p>Unknown settings tab</p>

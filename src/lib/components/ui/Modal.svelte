@@ -1,6 +1,8 @@
 <script lang="ts">
+    import Icon from "@iconify/svelte";
   import type { Snippet } from "svelte";
   import type { HTMLDialogAttributes } from "svelte/elements";
+    import ClickableIcon from "./ClickableIcon.svelte";
 
   type Props = {
     open?: boolean;
@@ -27,7 +29,6 @@
     open = false;
   }}
   onclick={(event) => {
-    console.log("Modal clicked", event);
     if (event.target === modal) {
       open = false;
     }
@@ -36,10 +37,15 @@
   class="z-50 backdrop:bg-neutral-800/30 rounded-lg p-4 shadow-lg outline-0 m-auto container"
   style="width: min(calc(100vw - 2rem), 48rem);"
 >
+<div>
   {#if header}
-    <header>
+    <header class="flex gap-2 items-center justify-between">
       {@render header()}
+      <ClickableIcon icon="mingcute:close-line" onclick={() => (open = false)} />
     </header>
   {/if}
-  {@render children()}
+  <main class="overflow-auto mt-4 flex-1">
+    {@render children()}
+  </main>
+</div>
 </dialog>

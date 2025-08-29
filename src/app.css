@@ -12,7 +12,7 @@
 
   --color-text: light-dark(#222, #fefefe);
   --color-link: light-dark(#007bff, #66b3ff);
-  --color-text-light: light-dark(#888, #ddd);
+  --color-text-light: light-dark(#444, #ddd);
   --color-border: light-dark(#dde, #333);
 
   --color-info: #17a2b8;
@@ -22,6 +22,7 @@
 
   --color-user: oklch(from var(--color-primary) calc(l + 0.1) c h / .4);
 
+  --default-font-family: "Roboto", sans-serif;
   --animate-typing: 0.6s ease-in-out upFade;
 
   @keyframes upFade {
@@ -36,13 +37,44 @@
     }
   }
 
-  /* --default-font-family: "Roboto", sans-serif; */
 }
 
 @layer base {
+
+  .reset-all {
+    line-height: 1.42;
+
+    & * {
+      all: revert;
+      box-sizing: border-box;
+    margin: 0;
+    }
+  }
+
+  table {
+    @apply w-full border-collapse;
+
+    th {
+      @apply bg-primary text-white p-2;
+    }
+
+    td {
+      @apply border border-border p-2;
+    }
+  }
+
+  pre:has(code) {
+    @apply rounded-lg;
+
+  }
+
   body {
     @apply bg-background h-screen w-screen text-text flex flex-col;
     color-scheme: light dark;
+  }
+
+  html, body {
+    font-family: var(--default-font-family) !important;
   }
 
   div#app {
@@ -84,11 +116,12 @@
 
 @layer utilities {
   .flex-center {
-    @apply flex items-center justify-center;
+    @apply items-center justify-center;
   }
 }
 
 @layer components {
+
   .lshadow {
     @media (prefers-color-scheme: light) {
       @apply shadow-lg;

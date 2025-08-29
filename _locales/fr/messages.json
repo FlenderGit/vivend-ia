@@ -3,8 +3,118 @@
         "message": "Extension de navigation pour Vivend'ia",
         "description": "Description du projet Vivend'ia"
     },
-    "new_conversation": {
+    
+    "ui_send": {
+        "message": "Envoyer",
+        "description": "Titre du bouton pour envoyer un message"
+    },
+    "ui_delete": {
+        "message": "Supprimer",
+        "description": "Titre du bouton pour supprimer un message"
+    },
+    "ui_cancel": {
+        "message": "Annuler",
+        "description": "Titre du bouton pour annuler une action"
+    },
+    "ui_settings": {
+        "message": "Paramètres",
+        "description": "Titre du bouton pour accéder aux paramètres"
+    },
+    "ui_logout": {
+        "message": "Déconnexion",
+        "description": "Titre du bouton pour se déconnecter"
+    },
+
+    "ui_new_chat": {
+        "message": "Nouvelle discussion",
+        "description": "Titre du bouton pour démarrer une nouvelle discussion"
+    },
+    "ui_loading": {
+        "message": "Chargement...",
+        "description": "Titre du bouton pendant le chargement"
+    },
+    "ui_welcome": {
+    "message": "Bienvenue sur $APP_NAME$ !",
+    "description": "Message de bienvenue",
+    "placeholders": {
+      "APP_NAME": {
+        "content": "$1",
+        "example": "example app"
+      }
+    }
+  },
+    "nav_chat": {
+        "message": "Chat",
+        "description": "Titre de la navigation vers le chat"
+    },
+    "nav_history": {
+        "message": "Historique",
+        "description": "Titre de la navigation vers l'historique"
+    },
+
+    "nav_new_conversation": {
         "message": "Nouvelle conversation",
         "description": "Titre du bouton pour démarrer une nouvelle conversation"
+    },
+    "nav_search": {
+        "message": "Recherche",
+        "description": "Titre de la navigation vers la recherche"
+    },
+    "nav_previous_chat": {
+        "message": "Chat précédent",
+        "description": "Titre de la navigation vers le chat précédent"
+    },
+
+    "error_generic": {
+        "message": "Une erreur s'est produite",
+        "description": "Message d'erreur générique"
+    },
+    "error_not_found": {
+        "message": "Ressource non trouvée",
+        "description": "Message d'erreur lorsque la ressource demandée est introuvable"
+    },
+    "error_unauthorized": {
+        "message": "Accès non autorisé",
+        "description": "Message d'erreur lorsque l'utilisateur n'est pas autorisé à accéder à la ressource"
+    },
+    "error_unlogged": {
+        "message": "Utilisateur non connecté",
+        "description": "Message d'erreur lorsque l'utilisateur n'est pas connecté"
+    },
+    "error_no_chat_selected": {
+        "message": "Aucune conversation sélectionnée",
+        "description": "Message d'erreur lorsque l'utilisateur n'a pas sélectionné de conversation"
+    },
+
+    "action_create_new_chat": {
+        "message": "Créer une nouvelle discussion",
+        "description": "Action pour créer une nouvelle discussion"
+    },
+    "action_delete_chat": {
+        "message": "Etes-vous sûr de vouloir supprimer $ENTITY$ ? Cette action est irréversible.",
+        "description": "Action pour supprimer la discussion en cours",
+        "placeholders": {
+            "ENTITY": {
+                "content": "$1",
+                "example": "exemple de discussion"
+            }
+        }
+    },
+
+    "helping_skip_link": {
+        "message": "Aller au contenu principal",
+        "description": "Instruction pour l'utilisateur sur la façon de passer au contenu principal"
+    },
+    "helping_enter_send_message": {
+        "message": "Appuyez sur Entrée pour envoyer votre message.",
+        "description": "Instruction pour l'utilisateur sur la façon d'envoyer un message"
+    },
+    "helping_connect_with_microso": {
+        "message": "Connectez-vous avec Microsoft",
+        "description": "Instruction pour l'utilisateur sur la façon de se connecter avec Microsoft"
+    },
+    "helping_connect_to_access": {
+        "message": "Connectez-vous pour accéder à cette application",
+        "description": "Instruction pour l'utilisateur sur la façon de se connecter pour accéder à une fonctionnalité"
     }
 }

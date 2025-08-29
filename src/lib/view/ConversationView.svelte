@@ -4,14 +4,12 @@
   import Modal from "../components/ui/Modal.svelte";
   import Sidebar from "../components/ui/Sidebar.svelte";
   import MessageAreaView from "../components/conversation/MessageAreaView.svelte";
-  import type { User } from "../types";
   import { current_conversation_store } from "../stores/current_conversation";
   import { onMount } from "svelte";
   import Icon from "@iconify/svelte";
   import Input from "$lib/components/Input.svelte";
+    import { t } from "$lib/utils/i18n";
 
-  type Props = {
-  };
   const { conversation, isLoading, error } = current_conversation_store;
 
   let open = $state(false);
@@ -48,7 +46,7 @@
   }
 
   onMount(() => {
-    current_conversation_store.loadNewConversation("C6D447A596F241778FA5BE03DC2EE7F8");
+    current_conversation_store.loadDefaultConversation();
 
     // Get the page name
     chrome.tabs?.query({ active: true, currentWindow: true }, (tabs) => {
@@ -60,30 +58,33 @@
   });
 
   let modalOpen = $state(false);
+  let window_width = $state(window.innerWidth);
+  let derived_open = $derived(open || window_width >= 768);
 </script>
 
-<svelte:window onkeydown={handleKeyDown} />
+<svelte:window onkeydown={handleKeyDown} bind:innerWidth={window_width}/>
 
 <Modal bind:open={modalOpen}>
   {#snippet header()}
-    <h2>Create new discussion</h2>
+    <h2>{t("action_create_new_chat")}</h2>
   {/snippet}
   <form>
     <p>Title & Icon & Feeling</p>
   </form>
 </Modal>
-<h1 class="sr-only">Vivend'ia</h1>
-<a href="#main-content" class="sr-only"> Skip to main content </a>
+<h1 class="sr-only">{__APP_NAME__}</h1>
+<a href="#main-content" class="sr-only">{t("helping_skip_link")}</a>
 
-<header class="flex gap-2 p-2 z-50 fixed">
+<header class="flex gap-2 p-2 z-50 fixed md:hidden">
   <ClickableIcon
-    title="Précédentes conversations"
+    title="Ouvrir la barre de navigation"
     icon="mingcute:align-left-line"
     onclick={() => (open = !open)}
   />
   <ClickableIcon
-    title="Nouvelle conversation"
+    title={t("ui_new_chat")}
     icon="mingcute:edit-line"
+    disabled={$conversation?.id === ""}
     onclick={() => {
       current_conversation_store.loadDefaultConversation();
     }}
@@ -96,18 +97,21 @@
   <Sidebar
     aria-label="Liste des précédentes conversations"
     aria-keyshortcuts="Ctrl+E"
-    bind:open
+    bind:open={derived_open}
+    onclose={() => (open = false)}
   />
-  {#if open}
-    <div transition:slide={{ axis: "x", duration: 400 }} class="sm:w-64"></div>
+  {#if derived_open}
+    <div transition:slide={{ axis: "x", duration: 400 }} class="md:w-64"></div>
   {/if}
+
   <div
-    class="flex-1 flex flex-col transition-all duration-500 {open && 'sm:py-3 sm:pr-3'}"
+    class="flex-1 flex flex-col transition-all duration-500 {derived_open &&
+      'md:py-3 md:pr-3'}"
   >
     <main
       id="main-content"
-      class="lshadow overflow-y-auto z-30 bg-background flex flex-col gap-2 flex-1 p-3 duration-500 transition-all {open &&
-        'sm:rounded-xl'}"
+      class="lshadow overflow-y-auto z-30 bg-background flex flex-col gap-2 flex-1 p-4 duration-500 transition-all {derived_open &&
+        'md:rounded-xl'}"
     >
       {#if $isLoading}
         <Icon
@@ -117,18 +121,20 @@
       {:else if $error}
         <p class="text-danger opacity-75 m-auto">Erreur: {$error.message}</p>
       {:else if $conversation}
-        <MessageAreaView
-          discussion={$conversation}
-          class="flex-1 overflow-y-auto"
-        />
+        {#if input_ref}
+          <MessageAreaView
+            bind:input_ref
+            discussion={$conversation}
+            class="flex-1 overflow-y-auto"
+          />
+        {/if}
         <section>
           <form {onsubmit}>
             <Input
               aria-keyshortcuts="Ctrl+Enter"
-              disabled={$conversation.status === "pending" ||
-                $conversation.status === "writing"}
+              disabled={$conversation.status === "pending" || $conversation.status === "writing"}
               type="text"
-              placeholder="Envoyer un message..."
+              placeholder={t("ui_send")}
               class="input lshadow"
               autocomplete="off"
               autocorrect="off"
@@ -138,12 +144,12 @@
               aria-describedby="input-hint"
             />
             <small class="text-xs sr-only" id="input-hint">
-              Press Enter to send your message.
+              {t("helping_enter_send_message")}
             </small>
           </form>
         </section>
       {:else}
-        <p class="text-gray-500">No conversation selected.</p>
+        <p class="text-text-light">{t("error_no_chat_selected")}</p>
       {/if}
     </main>
   </div>

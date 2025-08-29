@@ -4,6 +4,7 @@
   import type { ConversationPreviewData } from "$lib/types";
   import Icon from "@iconify/svelte";
   import Modal from "../ui/Modal.svelte";
+    import { t } from "$lib/utils/i18n";
 
   type Props = {
     open: boolean;
@@ -20,6 +21,7 @@
     <h2 class="text-lg font-semibold">Delete Conversation</h2>
   {/snippet}
   <p class="text-sm text-neutral-700">
+    {t("action_delete_chat", [`la discussion \"${preview.title}\"`])}
     Are you sure you want to delete the conversation "{preview.title}"? This
     action cannot be undone.
   </p>
@@ -55,7 +57,7 @@
       {#if is_deleting}
         <Icon icon="line-md:loading-loop" class="animate-spin m-auto text-xl opacity-75" />
       {:else}
-        Delete
+        {t("ui_delete")}
       {/if}
     </button>
     <button
@@ -64,7 +66,7 @@
         open = false;
       }}
     >
-      Cancel
+      {t("ui_cancel")}
     </button>
   </div>
 </Modal>

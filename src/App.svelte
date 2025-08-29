@@ -5,46 +5,65 @@
   import { onMount } from "svelte";
   import { toasts_store } from "./lib/stores/toasts";
   import { user_store } from "$lib/stores/user";
+  import { current_tab_store } from "$lib/stores/current_tab";
+  import Icon from "@iconify/svelte";
+    import { authenticator } from "$lib/utils/auth";
+    import { blur } from "svelte/transition";
 
+    let loading = $state(true);
   onMount(() => {
-    if (import.meta.env.DEV) {
-      $user_store = {
-        id: "1",
-        name: "John Doe",
-        email: "john.doe@me.com",
-      };
-    } else {
-      chrome.storage.local.get(["user"], (result) => {
-        if (result.user) {
-          $user_store = result.user;
-        }
-      });
-    }
+    authenticator.authenticate(false).andTee((user) => {
+      user_store.set(user);
+      console.log("User loaded on startup:", user);
+    }).match(
+      (user) => {
+        console.log("Authentication successful on startup:", user);
+      },
+      (err) => {
+        console.error("Authentication failed on startup:", err);
+      }
+    ).finally(() => {
+      loading = false;
+    });
+    
+
+    // document.documentElement.style.setProperty(
+    //   "--color-primary",
+    //   "hsl(220, 90%, 56%)"
+    // );
   });
 
-  // $effect(() => {
-  //   console.log("Theme store updated:", $theme_store);
-  //   Object.entries($theme_store).forEach(([key, value]) => {
-  //     console.log(`Setting CSS variable --color-${key} to ${value}`);
-  //     document.documentElement.style.setProperty(`--color-${key}`, value);
-  //   });
-  // });
 </script>
+
+<svelte:window on:visibilitychange={() => console.log("Visibility changed:", document.visibilityState)} />
 
 <svelte:head>
   <title>{ __APP_NAME__ }</title>
 </svelte:head>
 
-<!-- <button onclick={() => {
-  sendMessageToConversation("1", "Hello, world!");
-}}>
-  Test
-</button> -->
+{#if loading}
+  <div class="flex flex-center flex-1">
+    <Icon
+      icon="line-md:loading-loop"
+      class="animate-spin text-4xl opacity-75"
+    />
+  </div>
 
-{#if $user_store === null}
+{:else if !import.meta.env.VITE_LIST_ALLOWED_ORIGINS.split(",").includes($current_tab_store?.origin)}
+ <div class="flex flex-center flex-1 flex-col text-center px-4" in:blur>
+  <Icon icon="mingcute:alert-line" class="text-6xl" />
+  <p>Cette page n'est pas autorisée à utiliser l'extension.</p>
+  <p>Veuillez contacter l'administrateur si vous pensez que c'est une erreur.</p>
+  {#if import.meta.env.VITE_ADMIN_EMAIL}
+    <a href="mailto:{import.meta.env.VITE_ADMIN_EMAIL}">Contacter l'administrateur</a>
+  {/if}
+ </div>
+{:else if $user_store === null}
   <LoginView />
 {:else}
-  <ConversationView />
+  <div in:blur>
+    <ConversationView />
+  </div>
 {/if}
 
 <div class="absolute right-4 top-4 z-50">
@@ -56,4 +75,5 @@
       }}
     />
   {/each}
+
 </div>

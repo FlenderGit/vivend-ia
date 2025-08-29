@@ -12,12 +12,14 @@
   import Icon from "@iconify/svelte";
   import SearchModal from "../modal/SearchModal.svelte";
   import { t } from "$lib/utils/i18n";
+    import { authenticator } from "$lib/utils/auth";
 
   type Props = {
     open?: boolean;
+    onclose?: () => void;
   } & HTMLAsideAttributes;
 
-  let { open = $bindable(false), ...rest }: Props = $props();
+  let { open = $bindable(false), onclose, ...rest }: Props = $props();
   //
   const { conversation, isLoading, error } = current_conversation_store;
   const selected_id = $derived($conversation?.id || null);
@@ -69,7 +71,7 @@
 />
 
 <aside
-  class="absolute z-40 top-0 bottom-0 bg-background-secondary sm:z-20 sm:w-64 pt-12 px-4 pb-4 duration-500 transition-[opacity,transform,translate] grid grid-rows-[auto_1fr_auto] gap-4"
+  class="absolute z-40 top-0 bottom-0 bg-background-secondary inset-0 md:z-20 sm:w-64 pt-12 md:pt-4 px-4 pb-4 duration-500 transition-[opacity,transform,translate] grid grid-rows-[auto_1fr_auto]"
   class:translate-x-[-100%]={!open}
   class:translate-x-0={open}
   class:opacity-0={!open}
@@ -83,7 +85,7 @@
       }}
     >
       <Icon icon="mingcute:edit-line" class="size-5" />
-      {t("new_conversation")}
+      {t("nav_new_conversation")}
     </button>
     <button
       class="button hover:bg-neutral-300"
@@ -92,14 +94,16 @@
       }}
     >
       <Icon icon="mingcute:search-2-line" class="size-5" />
-      Rechercher
+      {t("nav_search")}
     </button>
   </div>
 
   <nav class="w-full overflow-y-auto text-sm">
-    <h2 class="my-4 text-sm opacity-50">Conversations</h2>
+    <h2 class="my-4 text-sm opacity-50">
+      {t("nav_previous_chat")}
+    </h2>
     {#if $isConversationsLoading}
-      <p>Loading...</p>
+      <p>{t("ui_loading")}</p>
     {:else if $error}
       <div class="error">
         <p>{$error.message}</p>
@@ -124,17 +128,18 @@
                   const new_id = $conversations[i + 1]?.id || "exemple";
                   loadNewConversationLinked(new_id);
                 }
-
                 history_conversation_store.removeConversation(discussion.id);
               }}
               onclick={() => {
                 if (selected_id === discussion.id) return;
                 loadNewConversationLinked(discussion.id);
+                  onclose?.();
+
               }}
             />
           </li>
         {:else}
-          <li class="text-neutral-500">No conversations found.</li>
+          <li class="opacity-50 italic">{t("no_conversations")}</li>
         {/each}
       </ul>
     {:else}
@@ -143,32 +148,33 @@
       </div>
     {/if}
   </nav>
-  <div class="flex items-center justify-between">
-    <div class="flex items-center gap-2">
-      {#if $user_store === null}
-        <p>No user logged in</p>
-      {:else}
-        <ProfilePicture user={$user_store} />
-        <div class="flex flex-col">
-          <p title={$user_store.email}>{$user_store.name}</p>
-          <span class="text-xs text-neutral-500">{$user_store.email}</span>
-        </div>
-      {/if}
-    </div>
+  <div class="items-center gap-2 grid grid-cols-[auto_1fr_auto]">
+    {#if $user_store === null}
+      <p>{t("error_unlogged")}</p>
+    {:else}
+      <ProfilePicture user={$user_store} />
+      <div class="flex flex-col min-w-0">
+        <p class="truncate text-sm" title={$user_store.name}>{$user_store.name}</p>
+        <span class="truncate text-xs text-neutral-500" title={$user_store.email}>{$user_store.email}</span>
+      </div>
+    {/if}
     <div class="flex items-center gap-1">
       <ClickableIcon
         icon="mdi:settings"
+        title={t("ui_settings")}
         onclick={() => {
           is_editing = true;
         }}
       />
       <ClickableIcon
         icon="mdi:logout"
+        title={t("ui_logout")}
         onclick={() => {
-          if (import.meta.env.PROD) {
-            chrome.storage.local.remove("user");
-          }
-          $user_store = null;
+          authenticator.clear_token().andTee((t) => {
+            user_store.set(null);
+            // current_conversation_store.clear();
+            // history_conversation_store.clear();
+          });
         }}
       />
     </div>

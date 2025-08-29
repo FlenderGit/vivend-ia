@@ -1,6 +1,8 @@
 import { createConversation, sendMessageToConversation } from "$lib/api";
 import { history_conversation_store } from "$lib/stores/conversation_history";
+import type { ResponseItem } from "$lib/types/openai";
 import { wait } from "$lib/utils";
+import type { ResponseOutputMessage } from "openai/resources/responses/responses.js";
 import type { ConversationData } from "../types";
 
 type Status = "pending" | "writing" | "resolved" | "rejected";
@@ -11,10 +13,11 @@ export class Conversation {
     return new Conversation({
       id: "",
       title: "",
-      // icon: "",
-      messages: [],
       updated_at: Date.now(),
-      // timestamp: new Date().getUTCHours(),
+      data: {
+        object: "list",
+        data: []
+      }
     });
   }
 
@@ -22,7 +25,10 @@ export class Conversation {
     id: "",
     title: "",
     // icon: "",
-    messages: [],
+    data: {
+      object: "list",
+      data: []
+    },
     description: "",
     updated_at: Date.now(),
     // timestamp: new Date().getUTCHours(),
@@ -48,8 +54,8 @@ export class Conversation {
     return this._status;
   }
 
-  get messages(): typeof this._data.messages {
-    return this._data.messages;
+  get messages(): typeof this._data.data {
+    return this._data.data;
   }
 
   // get icon(): string {
@@ -57,7 +63,7 @@ export class Conversation {
   // }
 
   get messageCount(): number {
-    return this._data.messages.length;
+    return this._data.data.data.length;
   }
 
   get responseBuffer(): Array<string> {
@@ -72,28 +78,28 @@ export class Conversation {
     this._status = "pending";
 
     const getStream = async () => {
+      console.log("Sending message to AI:", message, this._data.id);
+
       const conversationId = this._data.id;
       if (conversationId === "") {
-        this._data.messages = [
-          {
-            id: crypto.randomUUID(),
-            role: "user",
-            content: [{ text: message, type: "input_text" }]
-          }
-        ];
+        this.bufferMessage = [];
+        this.messages.data = [];
+        this.addUserMessage(message);
         return createConversation("Default Conversation", message)
-          .map(({ preview, messages }) => {
+          .andThen(preview => {
+            // Reset buffer
             const conversation: ConversationData = {
               ...this._data,
               ...preview
             };
-            console.log("Creating new conversation:", conversation, messages);
+            console.log("Creating new conversation:", conversation);
             this._data = conversation;
             history_conversation_store.addConversation(conversation);
-            return messages;
+          
+            return sendMessageToConversation(preview.id, message);
           });
       } else {
-        this.addMessage(crypto.randomUUID(), message, "user");
+        this.addUserMessage(message);
         return sendMessageToConversation(conversationId, message);
       }
     }
@@ -105,21 +111,50 @@ export class Conversation {
 
     this._status = "writing";
     for await (const event of message_stream.value) {
-      this.bufferMessage.push(event.data);
-      await wait(50);
+      console.log("Received event:", event);
+
+      if (event.type === "response.output_text.delta") {
+        this.bufferMessage.push(event.delta);
+        await wait(20);
+      // }
+      } else if (event.type === "response.output_item.done") {
+        if (event.item.id) {
+          if (event.item.type === "message") {
+            this.bufferMessage = [];
+            this.addOutputAssistant(event.item);
+            console.log("Output assistant added:", event.item);
+          }
+        } else {
+          console.warn("Received done event without item ID");
+        }
+      }
     }
 
-    await new Promise(resolve => setTimeout(resolve, 400));
-    this.addMessage(
-      crypto.randomUUID(),
-      this.currentMessage, "assistant");
-    this.bufferMessage = [];
+    await wait(500);
+    // this.addMessage(
+    //   crypto.randomUUID(),
+    //   this.currentMessage, "assistant");
+    // this.bufferMessage = [];
 
     this._status = "resolved";
   }
 
-  private addMessage(id: string, message: string, role: "user" | "assistant"): void {
-    this._data.messages.push({ id, content: [{ text: message, type: "input_text" }], role });
+  private addUserMessage(message: string): void {
+    this._data.data.data.push({
+      type: "message",
+      role: "user",
+      content: [{ type: "input_text", text: message }],
+      status: "completed",
+      id: crypto.randomUUID()
+    } as unknown as ResponseItem);
   }
+
+  private addOutputAssistant(message: ResponseOutputMessage): void {
+    this._data.data.data.push(message);
+  }
+
+  // private addMessage(id: string, message: string, role: "user" | "assistant"): void {
+  //   this._data.messages.push({ id, content: [{ text: message, type: "input_text" }], role });
+  // }
 
 }

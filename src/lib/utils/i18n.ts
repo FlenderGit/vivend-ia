@@ -2,9 +2,9 @@
  * if import.meta.env.DEV is true, we will use a local messages file for development purposes.
  * In production, we will use the Chrome i18n API to fetch messages.
  */
-export function t(key: string) {
-  console.log("i18n called with key:", key);
-  if (import.meta.env.DEV) {
+export function t(key: string, substitutions?: string[]) {
+  console.log("i18n called with key:", key, "with substitutions:", substitutions);
+  if (import.meta.env.MODE === "web") {
     const fullLanguage = navigator.language || navigator.userLanguage;
     const shortLanguage = fullLanguage.split("-")[0];
 
@@ -36,5 +36,5 @@ export function t(key: string) {
     const message = messages[key];
     return message?.message || key;
   }
-  return chrome.i18n.getMessage(key) || key;
+  return chrome.i18n.getMessage(key, substitutions) || key;
 }

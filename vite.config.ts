@@ -8,19 +8,18 @@ import { crx } from "@crxjs/vite-plugin";
 import manifest from "./manifest.json" with { type: "json" };
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  server: {
+    host: "localhost",
+    allowedHosts: ["dev.vivendi.com", "localhost" ],
+  },
   plugins: [
-    crx({ manifest,
-      contentScripts: {
-        injectCss: true,
-      }
+    mode === "extension" && crx({ manifest,
+      contentScripts: { injectCss: true, },
+      browser: "chrome",
     }),
     tailwindcss(),
-    svelte({
-      compilerOptions: {
-        runes: true,
-      },
-    }),
+    svelte({ compilerOptions: { runes: true, }, }),
     visualizer({
       filename: "generated/stats.html",
     }),
@@ -30,7 +29,12 @@ export default defineConfig({
       $lib: path.resolve(__dirname, "src/lib"),
     },
   },
+
+  
+  
+
   build: {
+    outDir : "dist/" + mode,
     rollupOptions: {
       output: {
         entryFileNames: "assets/[name].js",
@@ -39,12 +43,12 @@ export default defineConfig({
       },
     },
   },
-  // base: "",
+  base: mode === "web" ? "/fast/public/svelte" : "",
   define: {
     __APP_NAME__: JSON.stringify(manifest.name),
     __VERSION__: JSON.stringify(manifest.version),
   },
   esbuild: {
-    drop: ["console", "debugger"],
+    drop: process.env.NODE_ENV === "production" ? ["console", "debugger"] : [],
   }
-});
+}));

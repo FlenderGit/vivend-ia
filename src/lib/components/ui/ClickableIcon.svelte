@@ -24,6 +24,7 @@
     onclick,
     onclickpromise,
     title,
+    class: classData,
     popper = false,
     ...rest
   }: Props = $props();
@@ -68,7 +69,7 @@
 {#if popper}
   <button
     onclick={handleClick}
-    class="flex-center cursor-pointer size-8 rounded-lg hover:backdrop-brightness-90 transition-colors"
+    class="flex flex-center cursor-pointer size-8 rounded-lg hover:backdrop-brightness-90 transition-colors {classData}"
     {...rest}
     aria-label={title}
     use:usePopperElement
@@ -80,7 +81,7 @@
 {:else}
   <button
     onclick={handleClick}
-    class="flex-center cursor-pointer size-8 rounded-lg hover:backdrop-brightness-90 transition-colors"
+    class="flex flex-center cursor-pointer size-8 rounded-lg hover:backdrop-brightness-90 transition-colors {classData}"
     {...rest}
     aria-label={title}
     {title}

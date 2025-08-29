@@ -1,3 +1,5 @@
+import type { ResponseItem } from "./openai";
+
 export type ConversationPreviewData = {
     id: string;
     title: string;
@@ -5,17 +7,15 @@ export type ConversationPreviewData = {
     updated_at: number;
 }
 
-type TextMessage = {
-    type: 'input_text',
-    text: string
-}
-
-export type MessageData = {
-    id: string;
-    content: Array<TextMessage>;
-    role: 'user' | 'assistant';
-}
+type ListResponse<T> = {
+  object: "list";
+  data: T[];
+  first_id?: string | null;
+  last_id?: string | null;
+  has_more?: boolean;
+};
 
 export type ConversationData = ConversationPreviewData & {
-    messages: Array<MessageData>;
+    data: ListResponse<ResponseItem>;
 }
+
