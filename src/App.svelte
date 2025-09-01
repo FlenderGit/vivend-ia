@@ -53,6 +53,7 @@
  <div class="flex flex-center flex-1 flex-col text-center px-4" in:blur>
   <Icon icon="mingcute:alert-line" class="text-6xl" />
   <p>Cette page n'est pas autorisée à utiliser l'extension.</p>
+  <p>{$current_tab_store}</p>
   <p>Veuillez contacter l'administrateur si vous pensez que c'est une erreur.</p>
   {#if import.meta.env.VITE_ADMIN_EMAIL}
     <a href="mailto:{import.meta.env.VITE_ADMIN_EMAIL}">Contacter l'administrateur</a>

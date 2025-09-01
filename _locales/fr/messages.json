@@ -109,12 +109,16 @@
         "message": "Appuyez sur Entrée pour envoyer votre message.",
         "description": "Instruction pour l'utilisateur sur la façon d'envoyer un message"
     },
-    "helping_connect_with_microso": {
+    "helping_connect_with_microsoft": {
         "message": "Connectez-vous avec Microsoft",
         "description": "Instruction pour l'utilisateur sur la façon de se connecter avec Microsoft"
     },
     "helping_connect_to_access": {
         "message": "Connectez-vous pour accéder à cette application",
         "description": "Instruction pour l'utilisateur sur la façon de se connecter pour accéder à une fonctionnalité"
+    },
+    "helping_user_question": {
+        "message": "Posez votre question à l'assistant.",
+        "description": "Instruction pour l'utilisateur sur la façon de poser une question à l'assistant"
     }
 }

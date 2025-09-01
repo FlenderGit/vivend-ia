@@ -11,6 +11,6 @@
     <p class="text-lg font-semibold">
         {t("ui_welcome", $current_tab_store?.hostname ?? "no host found")}
     </p>
-    <p class="text-neutral-500 text-sm">{t("ui_helping_user_question")}</p>
+    <p class="text-neutral-500 text-sm">{t("helping_user_question")}</p>
 </div>
 

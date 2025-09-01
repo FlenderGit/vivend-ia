@@ -40,6 +40,7 @@
         .match(
           (data) => {
             status = "success";
+            console.log("Authentication successful:", data);
             $user_store = data;
           },
           (err) => {

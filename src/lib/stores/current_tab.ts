@@ -1,6 +1,6 @@
-import { readable } from "svelte/store";
+import { readable, writable } from "svelte/store";
 
-export const current_tab_store = readable<URL | null>(null, (set) => {
+export const current_tab_store = writable<URL | null>(null, (set) => {
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         console.log("Initial tab:", tabs);
@@ -21,10 +21,11 @@ export const current_tab_store = readable<URL | null>(null, (set) => {
     chrome.tabs.onUpdated.addListener(updateTab);
 
     async function activatedTabs(activeInfo) {
-        console.log("Tab changed:", activeInfo);
         const tab = await chrome.tabs.get(activeInfo.tabId);
-        if (tab) {
+        console.log("Tab changed:", tab);
+        if (tab && tab.favIconUrl) {
             // Get hostname only
+            console.log("Active tab:", tab);
             const url = new URL(tab.url);
             set(url);
         }
