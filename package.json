@@ -7,7 +7,6 @@
     "dev": "vite",
     "dev:extension": "vite --mode extension",
     "build:extension": "vite build --mode extension",
-    "build:extension-code": "VITE_FEATURES_CODE_PREVIEW=true vite build --mode extension",
     "build:web": "vite build --mode web",
     "build:all": "npm run build:extension && npm run build:web",
     "preview": "vite preview",

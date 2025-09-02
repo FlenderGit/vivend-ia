@@ -62,8 +62,8 @@
 </script>
 
 <svelte:window
-  on:click={handleGlobalClickCloseDropdown}
-  on:keydown={(e) => {
+  onclick={handleGlobalClickCloseDropdown}
+  onkeydown={(e) => {
     if (e.key === "Escape") {
       selected_dropdown_id = null;
     }

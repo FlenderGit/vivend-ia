@@ -3,9 +3,11 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import path from "path";
+import buildInfoPlugin from "./vite-info-plugin.ts"
 
 import { crx } from "@crxjs/vite-plugin";
 import manifest from "./manifest.json" with { type: "json" };
+
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -14,6 +16,7 @@ export default defineConfig(({ mode }) => ({
     allowedHosts: ["dev.vivendi.com", "localhost" ],
   },
   plugins: [
+    buildInfoPlugin(),
     mode === "extension" && crx({ manifest,
       contentScripts: { injectCss: true, },
       browser: "chrome",

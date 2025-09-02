@@ -95,7 +95,7 @@
 </script>
 
 <section
-  class="flex flex-col {classData} pt-8 gap-4 max-w-2xl w-full mx-auto"
+  class="flex flex-col {classData} gap-4"
   bind:this={viewport}
   {...rest}
   aria-live="polite"
@@ -123,7 +123,7 @@
     <EmptyConversation />
     <div class="grid md:grid-cols-2 gap-2">
       {#each suggestions as suggestion (suggestion)}
-        <button class="px-4 py-2 bg-neutral-200 hover:bg-neutral-300 rounded-lg transition-colors text-sm truncate {messages_splited.length % 2 === 1 && "md:last:hidden"}" title={suggestion} onclick={() => {
+        <button class="px-4 py-2 bg-neutral-200 hover:bg-neutral-300 rounded-lg transition-colors text-sm truncate {messages_splited.length % 2 === 0 && "md:last:hidden"}" title={suggestion} onclick={() => {
             input_ref.focus();
             input_ref.value = suggestion;
         }} 

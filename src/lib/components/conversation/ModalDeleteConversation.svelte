@@ -22,8 +22,6 @@
   {/snippet}
   <p class="text-sm text-neutral-700">
     {t("action_delete_chat", [`la discussion \"${preview.title}\"`])}
-    Are you sure you want to delete the conversation "{preview.title}"? This
-    action cannot be undone.
   </p>
   <div class="flex justify-end gap-2 mt-4">
     <button

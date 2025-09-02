@@ -61,7 +61,7 @@
         "description": "Titre de la navigation vers la recherche"
     },
     "nav_previous_chat": {
-        "message": "Chat précédent",
+        "message": "Chat récents",
         "description": "Titre de la navigation vers le chat précédent"
     },
 

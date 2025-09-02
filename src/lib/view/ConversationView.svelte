@@ -8,7 +8,7 @@
   import { onMount } from "svelte";
   import Icon from "@iconify/svelte";
   import Input from "$lib/components/Input.svelte";
-    import { t } from "$lib/utils/i18n";
+  import { t } from "$lib/utils/i18n";
 
   const { conversation, isLoading, error } = current_conversation_store;
 
@@ -105,14 +105,21 @@
   {/if}
 
   <div
-    class="flex-1 flex flex-col transition-all duration-500 {derived_open &&
-      'md:py-3 md:pr-3'}"
+    class="flex-1 grid transition-all duration-500 {derived_open && 'md:py-3 md:pr-3'}"
   >
+    <div class="grid flex-1 overflow-y-auto bg-background z-30 lshadow {derived_open && 'md:rounded-xl'}">
     <main
       id="main-content"
-      class="lshadow overflow-y-auto z-30 bg-background flex flex-col gap-2 flex-1 p-4 duration-500 transition-all {derived_open &&
-        'md:rounded-xl'}"
+      class="mx-auto flex flex-col gap-2 flex-1 p-4 duration-500 transition-all w-full max-w-2xl"
     >
+
+    <!-- <p>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio vero atque eos in ab ex omnis quas cupiditate reiciendis? Voluptatum debitis provident consequatur obcaecati reprehenderit possimus sed! Quam, vero delectus? Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloremque saepe quis nulla quisquam quod! Impedit non velit alias ipsum dolore perspiciatis sapiente aspernatur voluptate provident omnis harum, et quibusdam esse! Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse in saepe aperiam dolore pariatur accusantium et, explicabo accusamus! Animi officiis rem reprehenderit ex atque dolor facere voluptate quis, aspernatur dolorem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique reiciendis neque aut blanditiis commodi at sed dolorem facere, odio aliquid tempore id suscipit accusamus laborum itaque quaerat, ipsam ad perferendis! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Soluta sapiente amet unde ipsam accusamus pariatur et molestias rem quo quas! Tenetur perferendis harum quibusdam eum? Aliquam aliquid eligendi ducimus rem! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos ab praesentium odit, possimus minus autem eum corporis nesciunt ea et sapiente, laborum asperiores sit. Nihil aut commodi saepe voluptate voluptatibus.
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio vero atque eos in ab ex omnis quas cupiditate reiciendis? Voluptatum debitis provident consequatur obcaecati reprehenderit possimus sed! Quam, vero delectus? Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloremque saepe quis nulla quisquam quod! Impedit non velit alias ipsum dolore perspiciatis sapiente aspernatur voluptate provident omnis harum, et quibusdam esse! Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse in saepe aperiam dolore pariatur accusantium et, explicabo accusamus! Animi officiis rem reprehenderit ex atque dolor facere voluptate quis, aspernatur dolorem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique reiciendis neque aut blanditiis commodi at sed dolorem facere, odio aliquid tempore id suscipit accusamus laborum itaque quaerat, ipsam ad perferendis! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Soluta sapiente amet unde ipsam accusamus pariatur et molestias rem quo quas! Tenetur perferendis harum quibusdam eum? Aliquam aliquid eligendi ducimus rem! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos ab praesentium odit, possimus minus autem eum corporis nesciunt ea et sapiente, laborum asperiores sit. Nihil aut commodi saepe voluptate voluptatibus.
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio vero atque eos in ab ex omnis quas cupiditate reiciendis? Voluptatum debitis provident consequatur obcaecati reprehenderit possimus sed! Quam, vero delectus? Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloremque saepe quis nulla quisquam quod! Impedit non velit alias ipsum dolore perspiciatis sapiente aspernatur voluptate provident omnis harum, et quibusdam esse! Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse in saepe aperiam dolore pariatur accusantium et, explicabo accusamus! Animi officiis rem reprehenderit ex atque dolor facere voluptate quis, aspernatur dolorem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique reiciendis neque aut blanditiis commodi at sed dolorem facere, odio aliquid tempore id suscipit accusamus laborum itaque quaerat, ipsam ad perferendis! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Soluta sapiente amet unde ipsam accusamus pariatur et molestias rem quo quas! Tenetur perferendis harum quibusdam eum? Aliquam aliquid eligendi ducimus rem! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos ab praesentium odit, possimus minus autem eum corporis nesciunt ea et sapiente, laborum asperiores sit. Nihil aut commodi saepe voluptate voluptatibus.
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio vero atque eos in ab ex omnis quas cupiditate reiciendis? Voluptatum debitis provident consequatur obcaecati reprehenderit possimus sed! Quam, vero delectus? Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloremque saepe quis nulla quisquam quod! Impedit non velit alias ipsum dolore perspiciatis sapiente aspernatur voluptate provident omnis harum, et quibusdam esse! Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse in saepe aperiam dolore pariatur accusantium et, explicabo accusamus! Animi officiis rem reprehenderit ex atque dolor facere voluptate quis, aspernatur dolorem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique reiciendis neque aut blanditiis commodi at sed dolorem facere, odio aliquid tempore id suscipit accusamus laborum itaque quaerat, ipsam ad perferendis! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Soluta sapiente amet unde ipsam accusamus pariatur et molestias rem quo quas! Tenetur perferendis harum quibusdam eum? Aliquam aliquid eligendi ducimus rem! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos ab praesentium odit, possimus minus autem eum corporis nesciunt ea et sapiente, laborum asperiores sit. Nihil aut commodi saepe voluptate voluptatibus.
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio vero atque eos in ab ex omnis quas cupiditate reiciendis? Voluptatum debitis provident consequatur obcaecati reprehenderit possimus sed! Quam, vero delectus? Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloremque saepe quis nulla quisquam quod! Impedit non velit alias ipsum dolore perspiciatis sapiente aspernatur voluptate provident omnis harum, et quibusdam esse! Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse in saepe aperiam dolore pariatur accusantium et, explicabo accusamus! Animi officiis rem reprehenderit ex atque dolor facere voluptate quis, aspernatur dolorem. Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique reiciendis neque aut blanditiis commodi at sed dolorem facere, odio aliquid tempore id suscipit accusamus laborum itaque quaerat, ipsam ad perferendis! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Soluta sapiente amet unde ipsam accusamus pariatur et molestias rem quo quas! Tenetur perferendis harum quibusdam eum? Aliquam aliquid eligendi ducimus rem! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos ab praesentium odit, possimus minus autem eum corporis nesciunt ea et sapiente, laborum asperiores sit. Nihil aut commodi saepe voluptate voluptatibus.
+    </p> -->
       {#if $isLoading}
         <Icon
           icon="line-md:loading-loop"
@@ -125,7 +132,7 @@
           <MessageAreaView
             bind:input_ref
             discussion={$conversation}
-            class="flex-1 overflow-y-auto"
+            class="flex-1"
           />
         {/if}
         <section>
@@ -152,6 +159,8 @@
         <p class="text-text-light">{t("error_no_chat_selected")}</p>
       {/if}
     </main>
+
+    </div>
   </div>
   <!-- <ConversationView class="flex-1" {discussion} {open} /> -->
 </div>

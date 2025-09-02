@@ -1,4 +1,4 @@
-import type { EasyInputMessage, ResponseInputItem, ResponseOutputMessage } from "openai/resources/responses/responses.js";
+import type { EasyInputMessage, ResponseFunctionToolCall, ResponseInputItem, ResponseOutputMessage } from "openai/resources/responses/responses.js";
 
 
 export type OutputItemDone = ResponseOutputMessage["content"];
@@ -8,7 +8,7 @@ export type ResponseItem = Exclude<ResponseInputItem, EasyInputMessage>;
 
 // 2. Filtrer les messages par rôle
 export type UserMessage = ResponseInputItem.Message & { role: "user" };
-export type AssistantMessage = ResponseOutputMessage;
+export type AssistantMessage = ResponseOutputMessage | ResponseFunctionToolCall & { name: "test"};
 
 // 3. Types pour reasoning - tout sauf les messages user/assistant
 export type ResponseItemReasoning = Exclude<
@@ -24,7 +24,7 @@ export type ResponseItemUser = {
 
 export type ResponseItemAssistant = {  
   role: "assistant"; 
-  message?: AssistantMessage;
+  message?: AssistantMessage[];
   reasoning?: ResponseItemReasoning[];
 };
 
