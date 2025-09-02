@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Chart from "$lib/components/ui/Chart.svelte";
     import ClickableIcon from "$lib/components/ui/ClickableIcon.svelte";
     import type { ResponseItemAssistant } from "$lib/types/openai";
     import { snake_to_title } from "$lib/utils";
@@ -32,7 +33,8 @@
   };
 }
 
-const text_content = $derived(message.message?.content.map(content => content.type === "output_text" ? content.text : content.refusal).join("\n") ?? "");
+// const text_content = $derived(message.message?.content.map(content => content.type === "output_text" ? content.text : content.refusal).join("\n") ?? "");
+const text_content = $derived(message.message.map(it => it.type === "message" ? it.content.map(c => c.type === "output_text" ? c.text : "").join("\n") : "").join("\n") ?? "");
 
 </script>
 
@@ -70,7 +72,27 @@ const text_content = $derived(message.message?.content.map(content => content.ty
     </div>
 
     <div class="">
-        {#each message.message?.content ?? [] as content}
+        {#each message.message as msg (msg.id)}
+            {#if msg.type === "message"}
+                    {#each msg.content as content }
+                        {#if content.type === "output_text"}
+                            {#await get_marked().parse(content.text) then html}
+                                {@html html}
+                            {/await}
+                        {:else}
+                            <p>Refusal</p>
+                        {/if}
+                    {/each}
+            {:else if msg.type === "function_call_output" && msg.name === "create_graph"}
+                {#if import.meta.env.VITE_FEATURES_DISPLAY_CHARTS === 'true'}
+                    {@const config = JSON.parse(msg.output || "{}")}
+                    <Chart {config} />
+                {:else}
+                    <p>Chart display is disabled.</p>
+                {/if}
+            {/if}
+        {/each}
+        <!-- {#each message.message?.content ?? [] as content}
             {#if content.type === "output_text"}
                 {#await get_marked().parse(content.text) then html}
                     {@html html}
@@ -78,7 +100,7 @@ const text_content = $derived(message.message?.content.map(content => content.ty
             {:else}
                 <p>Refusal</p>
             {/if}
-        {/each}
+        {/each} -->
     </div>
 
     {#if text_content !== ""}

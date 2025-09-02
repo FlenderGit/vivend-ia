@@ -8,7 +8,7 @@ export type ResponseItem = Exclude<ResponseInputItem, EasyInputMessage>;
 
 // 2. Filtrer les messages par rôle
 export type UserMessage = ResponseInputItem.Message & { role: "user" };
-export type AssistantMessage = ResponseOutputMessage | ResponseFunctionToolCall & { name: "test"};
+export type AssistantMessage = ResponseOutputMessage | (ResponseInputItem.FunctionCallOutput & { name: "create_graph" });
 
 // 3. Types pour reasoning - tout sauf les messages user/assistant
 export type ResponseItemReasoning = Exclude<
@@ -24,8 +24,8 @@ export type ResponseItemUser = {
 
 export type ResponseItemAssistant = {  
   role: "assistant"; 
-  message?: AssistantMessage[];
-  reasoning?: ResponseItemReasoning[];
+  message: AssistantMessage[];
+  reasoning: ResponseItemReasoning[];
 };
 
 export type MessageByRole = ResponseItemUser | ResponseItemAssistant;

@@ -36,6 +36,7 @@ VITE_AZURE_REDIRECT_URI='...'
 ### ✨ Features
 Before build, you can enable some features (depending the extension size you want):
 - **VITE_FEATURES_CODE_PREVIEW**: View the code with highlighting
+- **VITE_FEATURES_DISPLAY_CHARTS**: Can display charts
 
 ### Access extension
 Finally you can build the project :

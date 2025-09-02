@@ -6,11 +6,12 @@
   import { current_tab_store } from "$lib/stores/current_tab";
   import { fetch_suggestions } from "$lib/api/suggestion";
   import { blur } from "svelte/transition";
-    import EmptyConversation from "./EmptyConversation.svelte";
-    import type { AssistantMessage, MessageByRole, ResponseItem, ResponseItemReasoning } from "$lib/types/openai";
-    import { is_assistant_message, is_user_message } from "$lib/utils/openai";
-    import UserMessageView from "./message/UserMessageView.svelte";
-    import AssistantMessageView from "./message/AssistantMessageView.svelte";
+  import EmptyConversation from "./EmptyConversation.svelte";
+  import type { AssistantMessage, MessageByRole, ResponseItem, ResponseItemReasoning } from "$lib/types/openai";
+  import { is_user_message } from "$lib/utils/openai";
+  import UserMessageView from "./message/UserMessageView.svelte";
+  import AssistantMessageView from "./message/AssistantMessageView.svelte";
+  import type { ResponseOutputMessage } from "openai/resources/responses/responses.js";
 
   type Props = {
     input_ref: HTMLInputElement;
@@ -52,16 +53,22 @@
 
       let result: MessageByRole[] = [];
       let reasoningBuffer: ResponseItemReasoning[] = [];
+      let assistantMessageBuffer: AssistantMessage[] = [];
+      let functionCallBuffer: Record<string, string> = {};
 
-      const flushReasoningBuffer = (assistant_msg?: AssistantMessage): void => {
-        if (reasoningBuffer.length > 0 || assistant_msg) {
+      const flushReasoningBuffer = (): void => {
+        if (assistantMessageBuffer.length) {
           result.push({ 
             role: "assistant", 
-            message: assistant_msg,
+            message: [...assistantMessageBuffer],
             reasoning: [...reasoningBuffer],
           });
           reasoningBuffer = [];
         }
+      };
+
+      const is_showable_assistant_message = (message: ResponseItem): message is ResponseOutputMessage => {
+        return message.type === "message" && message.role === "assistant";
       };
 
       for (const message of messages) {
@@ -69,14 +76,39 @@
         if (is_user_message(message)) {
           flushReasoningBuffer(); 
           result.push({ role: "user", message});
-        // If it's a message from assistant, push the buffer
-        } else if (is_assistant_message(message)) {
-          flushReasoningBuffer(message);
-        // Else (it reasoning, function_call, etc.), add to buffer
         } else {
-          reasoningBuffer.push(message);
-        }
+          
+          // Save the function name using id
+          if (message.type === "function_call") {
+            if (message.id) {
+              functionCallBuffer[message.call_id] = message.name
+            } else {
+              console.warn("Function call message without id:", message);
+            }
+
+          }
+
+          // console.log(message, functionCallBuffer, message.type === "function_call_output" && functionCallBuffer[message.id] : null);
+          if (is_showable_assistant_message(message)) {
+            assistantMessageBuffer.push(message);
+          } else if (message.type === "function_call_output" && message.id != undefined && functionCallBuffer[message.call_id] === "create_graph") {
+            assistantMessageBuffer.push({
+              ...message,
+              name: "create_graph"
+            });
+          } else {
+            reasoningBuffer.push(message);
+          }
+
+        // If it's a message from assistant, push the buffer
+        // } else if (is_assistant_message(message)) {
+        //   flushReasoningBuffer(message);
+        // // Else (it reasoning, function_call, etc.), add to buffer
+        // } else {
+        //   reasoningBuffer.push(message);
+        // }
       }
+    }
       
       flushReasoningBuffer();
       console.log("Messages split by role:", result);

@@ -5,6 +5,3 @@ export function is_user_message(message: ResponseInputItem): message is UserMess
   return message.type === "message" && message.role as any === "user";
 }
 
-export function is_assistant_message(message: ResponseInputItem): message is AssistantMessage {
-  return message.type === "message" && message.role as any === "assistant";
-}
